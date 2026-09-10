@@ -1,7 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { accessSync, constants, existsSync, statSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseArgvDescriptor } from "../argv-descriptor.js";
@@ -31,6 +31,28 @@ function findPackageRoot(startDir: string): string {
 		if (parentDir === currentDir) throw new Error("Unable to resolve the pi-agent-browser-native package root.");
 		currentDir = parentDir;
 	}
+}
+
+function isExecutableFile(candidate: string): boolean {
+	try {
+		return statSync(candidate).isFile() && (accessSync(candidate, constants.X_OK), true);
+	} catch {
+		return false;
+	}
+}
+
+function resolveScriptWorkerRuntime(): string {
+	// A single-executable-application host sets process.execPath to its own binary, which is not a
+	// Node runtime, so the sandbox worker could never start. Prefer an explicit override, keep the
+	// current runtime when it already is Node, and fall back to well-known Node locations otherwise.
+	const override = process.env.PIAB_SCRIPT_NODE;
+	if (override && isExecutableFile(override)) return override;
+	if (!/^node(js)?(\.exe)?$/i.test(basename(process.execPath))) {
+		for (const candidate of ["/pi/node/tool/fnm/aliases/default/bin/node", "/usr/local/bin/node", "/usr/bin/node"]) {
+			if (isExecutableFile(candidate)) return candidate;
+		}
+	}
+	return process.execPath;
 }
 
 function resolveScriptWorkerPath(): string {
@@ -300,7 +322,7 @@ export async function runAgentBrowserScript(options: RunAgentBrowserScriptOption
 		return buildFailedRun({ callCount: 0, emitCount: 0, error: message, failureCategory: "missing-binary", rejectedCallCount: 0, steps: [] });
 	}
 
-	const child = spawn(process.execPath, [
+	const child = spawn(resolveScriptWorkerRuntime(), [
 		"--permission",
 		"--max-old-space-size=64",
 		workerPath,
