@@ -6,6 +6,21 @@ based on upstream `v0.6.10`.
 
 ## Changes
 
+### Renamed to `host-browser`
+
+The fork was renamed from `pi-agent-browser-native` to `host-browser` so the name reflects the
+local (on-host) browser and no longer reads as an upstream `pi-agent` mirror:
+
+- GitHub repository: `outmost9271/host-browser`
+- `package.json` `name`: `host-browser`
+- package bins: `host-browser-config`, `host-browser-doctor`
+- package config paths: `.pi/config/host-browser/config.json` (global and project)
+- local state prefixes: `host-browser-*` / `.host-browser-*`
+
+Stable internal identifiers intentionally kept: the `agent_browser` tool name, `AGENT_BROWSER_*`
+environment variables, `PI_AGENT_BROWSER_CONFIG`, `PI_AGENT_BROWSER_ALLOW_DIRECT_BASH`,
+`PIAB_SCRIPT_NODE`, `piab-script-*` session names, and the `-piab.<n>` release-tag suffix.
+
 ### Resolve a real Node runtime for the script sandbox worker
 
 Upstream `script` mode starts its sandbox worker with `spawn(process.execPath, ...)`. When the
@@ -21,12 +36,12 @@ This fork resolves the worker runtime before spawning:
 3. `/pi/node/tool/fnm/aliases/default/bin/node`, then `/usr/local/bin/node`, then `/usr/bin/node`;
 4. fallback to `process.execPath`.
 
-The change is limited to `extensions/agent-browser/lib/input-modes/script.ts`.
+The runtime change is limited to `extensions/agent-browser/lib/input-modes/script.ts`.
 
 ## Installing this fork
 
 ```bash
-pi install git:github.com/outmost9271/pi-agent-browser-native@v0.6.10-piab.1
+pi install git:github.com/outmost9271/host-browser@v0.6.10-piab.2
 ```
 
 ## License

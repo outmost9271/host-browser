@@ -902,7 +902,7 @@ function findPackageRoot(startDir: string): string {
 		const packageJsonPath = join(currentDir, "package.json");
 		if (existsSync(packageJsonPath)) {
 			const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as { name?: unknown };
-			if (packageJson.name === "pi-agent-browser-native") return currentDir;
+			if (packageJson.name === "host-browser") return currentDir;
 		}
 		const parentDir = dirname(currentDir);
 		if (parentDir === currentDir) return startDir;
@@ -1122,7 +1122,7 @@ export default function agentBrowserExtension(pi: ExtensionAPI) {
 		let observedVersion: string | undefined;
 		if (probe.spawnError || probe.exitCode !== 0) {
 			const detail = redactSensitiveText(probe.spawnError?.message ?? (probe.stderr.trim() || `exit ${probe.exitCode}`));
-			error = `agent-browser --version could not be validated (${detail}). Run pi-agent-browser-doctor before browser-backed calls.`;
+			error = `agent-browser --version could not be validated (${detail}). Run host-browser-doctor before browser-backed calls.`;
 		} else {
 			observedVersion = parseAgentBrowserVersionOutput(probe.stdout);
 			error = getAgentBrowserVersionValidationError(probe.stdout);

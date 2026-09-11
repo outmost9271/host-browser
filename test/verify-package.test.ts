@@ -315,7 +315,7 @@ test("evaluatePackResult uses the shared publish contract", async () => {
 		missingRepoFiles: [],
 		packResult: {
 			entryCount: publishContract.requiredPackedFiles.length,
-			filename: "pi-agent-browser-native-0.2.12.tgz",
+			filename: "host-browser-0.2.12.tgz",
 			files: publishContract.requiredPackedFiles.map((path) => ({ path })),
 			size: 123,
 			unpackedSize: 456,
@@ -347,11 +347,11 @@ test("evaluatePackResult rejects forbidden directory prefixes", () => {
 });
 
 test("verifyPackageRelease lets prepare create a missing dist directory", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-package-build-owner-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-package-build-owner-"));
 	try {
 		await writeFile(join(tempDir, "LICENSE"), "fixture\n", "utf8");
 		await writeFile(join(tempDir, "build.mjs"), 'import { mkdirSync, writeFileSync } from "node:fs"; mkdirSync("dist", { recursive: true }); writeFileSync("dist/index.js", "export {};\\n");\n', "utf8");
-		await writeFile(join(tempDir, "package.json"), `${JSON.stringify({ name: "pi-agent-browser-package-build-owner-fixture", version: "1.0.0", type: "module", files: ["dist"], scripts: { prepare: "node build.mjs" } }, null, 2)}\n`, "utf8");
+		await writeFile(join(tempDir, "package.json"), `${JSON.stringify({ name: "host-browser-package-build-owner-fixture", version: "1.0.0", type: "module", files: ["dist"], scripts: { prepare: "node build.mjs" } }, null, 2)}\n`, "utf8");
 
 		await assert.rejects(access(join(tempDir, "dist")));
 		const report = await verifyPackageRelease({ cwd: tempDir });
@@ -370,7 +370,7 @@ test("packToTemporaryPackageDir writes a tarball even under npm publish dry-run 
 	try {
 		packed = await packToTemporaryPackageDir();
 		await access(join(packed.packageDir, "package.json"));
-		assert.match(packed.packResult.filename, /^pi-agent-browser-native-.*\.tgz$/);
+		assert.match(packed.packResult.filename, /^host-browser-.*\.tgz$/);
 	} finally {
 		if (previousDryRun === undefined) {
 			delete process.env.npm_config_dry_run;

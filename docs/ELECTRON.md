@@ -10,7 +10,7 @@ Related docs:
 
 ## Purpose
 
-This guide is the entry point for using `pi-agent-browser-native` against desktop **Electron** applications. The wrapper exposes a top-level `electron` shorthand that owns the awkward discover → launch → attach → probe → cleanup sequence so agents do not hand-build `--remote-debugging-port` argv, poll `DevToolsActivePort`, and `kill` profile directories. After attach, the rest of the native `agent_browser` surface (`snapshot`, `find`, `click`, `fill`, `get`, `eval --stdin`, `batch`, `qa.attached`, and similar) works the same way it does against a web page.
+This guide is the entry point for using `host-browser` against desktop **Electron** applications. The wrapper exposes a top-level `electron` shorthand that owns the awkward discover → launch → attach → probe → cleanup sequence so agents do not hand-build `--remote-debugging-port` argv, poll `DevToolsActivePort`, and `kill` profile directories. After attach, the rest of the native `agent_browser` surface (`snapshot`, `find`, `click`, `fill`, `get`, `eval --stdin`, `batch`, `qa.attached`, and similar) works the same way it does against a web page.
 
 This document is structured for users, not implementers. Field-level rules live in [`TOOL_CONTRACT.md`](TOOL_CONTRACT.md#electron); this guide focuses on **when** and **how** to use them, and on the safety and ownership boundary the wrapper enforces.
 

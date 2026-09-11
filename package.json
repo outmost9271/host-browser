@@ -1,7 +1,7 @@
 {
-  "name": "pi-agent-browser-native",
+  "name": "host-browser",
   "version": "0.6.10",
-  "description": "pi extension that exposes agent-browser as a native tool for browser automation",
+  "description": "Pi extension that drives the local browser as a native tool for browser automation",
   "type": "module",
   "author": "Mitch Fultz (https://github.com/fitchmultz)",
   "keywords": [
@@ -17,18 +17,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fitchmultz/pi-agent-browser-native.git"
+    "url": "git+https://github.com/outmost9271/host-browser.git"
   },
-  "homepage": "https://github.com/fitchmultz/pi-agent-browser-native#readme",
+  "homepage": "https://github.com/outmost9271/host-browser#readme",
   "bugs": {
-    "url": "https://github.com/fitchmultz/pi-agent-browser-native/issues"
+    "url": "https://github.com/outmost9271/host-browser/issues"
   },
   "engines": {
     "node": ">=22.19.0"
   },
   "bin": {
-    "pi-agent-browser-config": "scripts/config.mjs",
-    "pi-agent-browser-doctor": "scripts/doctor.mjs"
+    "host-browser-config": "scripts/config.mjs",
+    "host-browser-doctor": "scripts/doctor.mjs"
   },
   "files": [
     "dist",

@@ -10,7 +10,7 @@ Related docs:
 
 ## Purpose
 
-Define the product requirements and constraints for `pi-agent-browser-native`.
+Define the product requirements and constraints for `host-browser`.
 
 ## Product requirements
 
@@ -47,12 +47,12 @@ Define the product requirements and constraints for `pi-agent-browser-native`.
 ### Install priority
 
 - Prioritize the package install path first.
-- User-facing install docs should lead with `pi install npm:pi-agent-browser-native`; ephemeral package trials and validation should use `pi --no-extensions -e npm:pi-agent-browser-native[@<version>]` so configured checkout or global sources cannot duplicate `agent_browser`, adding `--approve` in Pi 0.84.0+ automation when the current project is intentionally trusted.
+- User-facing install docs should lead with `pi install npm:host-browser`; ephemeral package trials and validation should use `pi --no-extensions -e npm:host-browser[@<version>]` so configured checkout or global sources cannot duplicate `agent_browser`, adding `--approve` in Pi 0.84.0+ automation when the current project is intentionally trusted.
 - User-facing install docs should also include the GitHub source path `pi install https://github.com/fitchmultz/pi-agent-browser-native`.
 - Provide a read-only package-level doctor command that checks upstream `agent-browser` PATH/version and duplicate Pi package/checkout sources before first use. It must not mutate Pi settings and must remain distinct from upstream `agent-browser doctor`.
 - Keep the current local-checkout path documented as the practical pre-release and development flow.
 - Most users will install this extension globally rather than as a project-local extension.
-- Local trusted-checkout smoke testing should use explicit CLI loading such as `pi --approve --no-extensions -e .` or `pi --approve --no-extensions -e /absolute/path/to/pi-agent-browser-native`; automatic extension loading is disabled, but Pi settings and configured package resolution remain active. Use temporary `HOME` and `PI_CODING_AGENT_DIR` directories for isolated test settings, with `PI_OFFLINE=1` to disable automatic startup network/update operations. Code edits require a process restart for validation. Omit `--approve` only when the test is meant to cover Pi's Project Trust prompt.
+- Local trusted-checkout smoke testing should use explicit CLI loading such as `pi --approve --no-extensions -e .` or `pi --approve --no-extensions -e /absolute/path/to/host-browser`; automatic extension loading is disabled, but Pi settings and configured package resolution remain active. Use temporary `HOME` and `PI_CODING_AGENT_DIR` directories for isolated test settings, with `PI_OFFLINE=1` to disable automatic startup network/update operations. Code edits require a process restart for validation. Omit `--approve` only when the test is meant to cover Pi's Project Trust prompt.
 - Local checkout hot-reload and exact-session relaunch validation should use configured-source lifecycle mode: exactly one active checkout/package source in Pi settings, launched with plain `pi` (or the lifecycle harness' exact `--session-id` relaunch path), so `/reload` and relaunch events exercise discovered/configured resources. Focused extension harness tests validate Pi `session_tree` branch rehydration and cleanup ownership.
 - Do **not** rely on repo-local `.pi/extensions/` auto-discovery for this package, because it conflicts with the global installed-package path.
 

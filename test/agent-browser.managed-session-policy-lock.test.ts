@@ -19,7 +19,7 @@ import {
 const sessionName = `piab-policy-lock-${process.pid}`;
 const lockBasePath = getManagedSessionPolicyLockPath(sessionName);
 const claimPrefix = `${basename(lockBasePath)}.claim-`;
-const testOrphanPath = join(dirname(lockBasePath), `.pi-agent-browser-policy-remove-test-${process.pid}`);
+const testOrphanPath = join(dirname(lockBasePath), `.host-browser-policy-remove-test-${process.pid}`);
 
 async function claimPaths(): Promise<string[]> {
 	try {

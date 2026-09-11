@@ -1,5 +1,5 @@
 /**
- * Purpose: Verify pure runtime planning and policy helpers for the pi-agent-browser extension.
+ * Purpose: Verify pure runtime planning and policy helpers for the host-browser extension.
  * Responsibilities: Assert session naming/state, execution-plan argument injection, and redaction helpers.
  * Scope: Unit-style Node test-runner coverage for stable helper behavior; extension entrypoint lifecycle tests live in focused integration suites.
  * Usage: Run with `npx tsx --test test/agent-browser.runtime.test.ts` or via `npm run verify`.
@@ -81,16 +81,16 @@ test("buildExecutionPlan rejects ambiguous session identity flags without reject
 
 test("createImplicitSessionName is stable for a persisted pi session", () => {
 	const sessionId = "12345678-1234-5678-9abc-def012345678";
-	const cwd = "/Users/example/Projects/pi-agent-browser";
+	const cwd = "/Users/example/Projects/host-browser";
 	const one = createImplicitSessionName(sessionId, cwd, "ignored-a", "linux");
 	const two = createImplicitSessionName(sessionId, cwd, "ignored-b", "linux");
 
 	assert.equal(one, two);
-	assert.match(one, /^piab-pi-agent-browser-[a-f0-9]{12}-[a-f0-9]{8}$/);
+	assert.match(one, /^piab-host-browser-[a-f0-9]{12}-[a-f0-9]{8}$/);
 });
 
 test("createImplicitSessionName hashes the full Pi session id", () => {
-	const cwd = "/Users/example/Projects/pi-agent-browser";
+	const cwd = "/Users/example/Projects/host-browser";
 	const one = createImplicitSessionName("019fe81c-92dd-7000-8000-000000000001", cwd, "ignored", "linux");
 	const two = createImplicitSessionName("019fe81c-92dd-7000-8000-000000000002", cwd, "ignored", "linux");
 

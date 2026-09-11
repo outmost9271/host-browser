@@ -7,7 +7,7 @@ $ErrorActionPreference = "Continue"
 $SourceRoot = (Get-Location).Path
 $RunRoot = Join-Path ".platform-smoke-runs" ("browser-dogfood-{0}-{1}" -f ((Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ")), $PID)
 $DogfoodDir = Join-Path $SourceRoot (Join-Path $RunRoot "dogfood")
-$DogfoodArtifactDir = Join-Path $env:TEMP ("pi-agent-browser-dogfood-artifacts-{0}" -f $PID)
+$DogfoodArtifactDir = Join-Path $env:TEMP ("host-browser-dogfood-artifacts-{0}" -f $PID)
 New-Item -ItemType Directory -Force -Path $DogfoodDir | Out-Null
 New-Item -ItemType Directory -Force -Path $DogfoodArtifactDir | Out-Null
 

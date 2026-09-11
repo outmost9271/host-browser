@@ -103,7 +103,7 @@ test("prepareAgentBrowserSpawnArgs preserves caller launch controls", () => {
 });
 
 test("runAgentBrowserProcess passes upstream browser configuration and file access through", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-raw-args-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-raw-args-"));
 	const binaryPath = join(tempDir, "agent-browser");
 	const basePath = process.env.PATH ?? "";
 	await writeFile(binaryPath, `#!/usr/bin/env node
@@ -181,7 +181,7 @@ test("process start identity rejects empty, multi-record, and NUL output", () =>
 });
 
 test("writeFakeAgentBrowserBinary installs Windows cmd launcher when platform is win32", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-win32-launcher-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-win32-launcher-"));
 
 	try {
 		const launcherPath = await writeFakeAgentBrowserBinary(
@@ -247,7 +247,7 @@ test("agent-browser socket path preflight reports long configured roots before u
 test("agent-browser socket storage rejects unsafe permissions, ancestry, symlinks, and ownership", async (context) => {
 	const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
 	if (uid === undefined) return context.skip("POSIX ownership metadata is unavailable");
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-socket-security-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-socket-security-"));
 	try {
 		const insecureDir = join(tempDir, "insecure");
 		await mkdir(insecureDir, { mode: 0o700 });
@@ -282,7 +282,7 @@ test("agent-browser socket storage rejects unsafe permissions, ancestry, symlink
 test("agent-browser socket storage validates root-owned alias destination ancestry", { timeout: 5_000 }, async (context) => {
 	const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
 	if (uid !== 0) return context.skip("Creating root-owned aliases and foreign-owned intermediate links requires actual uid 0");
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-socket-alias-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-socket-alias-"));
 	try {
 		const trusted = join(tempDir, "trusted");
 		const unsafe = join(tempDir, "unsafe");
@@ -340,7 +340,7 @@ test("agent-browser socket storage validates root-owned alias destination ancest
 });
 
 test("runAgentBrowserProcess uses the Pi-scoped socket directory without trusting ambient upstream configuration", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-socket-config-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-socket-config-"));
 	const socketPath = join(tempDir, "socket");
 	try {
 		await writeFakeAgentBrowserBinary(
@@ -369,7 +369,7 @@ test("runAgentBrowserProcess uses the Pi-scoped socket directory without trustin
 });
 
 test("runAgentBrowserProcess fails before spawn for unsafe socket storage", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-socket-preflight-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-socket-preflight-"));
 	const markerPath = join(tempDir, "spawned.txt");
 	const targetPath = join(tempDir, "target");
 	const socketPath = join(tempDir, "socket-link");
@@ -389,7 +389,7 @@ test("runAgentBrowserProcess fails before spawn for unsafe socket storage", asyn
 });
 
 test("runAgentBrowserProcess does not spawn already-aborted calls", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	const startedPath = join(tempDir, "started");
 	await writeFakeAgentBrowserBinary(
@@ -418,7 +418,7 @@ test("runAgentBrowserProcess does not spawn already-aborted calls", async () => 
 });
 
 test("runAgentBrowserProcess stops a hung upstream client at the wrapper watchdog", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-timeout-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-timeout-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -445,7 +445,7 @@ test("runAgentBrowserProcess stops a hung upstream client at the wrapper watchdo
 });
 
 test("runAgentBrowserProcess handles closed stdin pipe without an unhandled EPIPE", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `process.stdin.destroy(); setImmediate(() => process.exit(0));`);
 
@@ -465,7 +465,7 @@ test("runAgentBrowserProcess handles closed stdin pipe without an unhandled EPIP
 });
 
 test("runAgentBrowserProcess handles abort during stdin-bearing command", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -493,7 +493,7 @@ test("runAgentBrowserProcess handles abort during stdin-bearing command", async 
 });
 
 test("runAgentBrowserProcess resolves after exit when descendants keep stdio handles open", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-stdio-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-stdio-"));
 	const basePath = process.env.PATH ?? "";
 	const lingerPidPath = join(tempDir, "linger.pid");
 	await writeFakeAgentBrowserBinary(
@@ -539,7 +539,7 @@ test("runAgentBrowserProcess resolves after exit when descendants keep stdio han
 });
 
 test("runAgentBrowserProcess returns timeout exit code when descendants keep stdio handles open", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-stdio-timeout-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-stdio-timeout-"));
 	const basePath = process.env.PATH ?? "";
 	const lingerPidPath = join(tempDir, "linger.pid");
 	await writeFakeAgentBrowserBinary(
@@ -586,7 +586,7 @@ test("runAgentBrowserProcess returns timeout exit code when descendants keep std
 });
 
 test("runAgentBrowserProcess removes abort listeners after repeated successful runs with one shared signal", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -615,7 +615,7 @@ test("runAgentBrowserProcess removes abort listeners after repeated successful r
 });
 
 test("runAgentBrowserProcess removes abort listeners after spawn errors", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const controller = new AbortController();
 
 	try {
@@ -642,7 +642,7 @@ test("runAgentBrowserProcess removes abort listeners after spawn errors", async 
 });
 
 test("runAgentBrowserProcess spills oversized stdout while parseAgentBrowserEnvelope still sees the full payload", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const fakeAgentBrowserPath = join(tempDir, "agent-browser");
 	const bigSnapshotRows = Array.from({ length: 7_000 }, (_, index) => {
 		const ref = `e${index + 1}`;
@@ -711,7 +711,7 @@ process.stdout.write(JSON.stringify(envelope));`,
 
 test("runAgentBrowserProcess stops spilling once the secure temp budget is exceeded", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	const oversizedPayload = JSON.stringify({ success: true, data: { snapshot: "x".repeat(700_000) } });
 	await writeFakeAgentBrowserBinary(tempDir, `process.stdout.write(${JSON.stringify(oversizedPayload)});`);
@@ -739,7 +739,7 @@ test("runAgentBrowserProcess stops spilling once the secure temp budget is excee
 
 test("agentBrowserExtension removes oversized close stdout spill after fresh-session rotation", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	const closeDebugPath = join(tempDir, "close-debug.json");
 	await writeFakeAgentBrowserBinary(
@@ -795,7 +795,7 @@ if (args.includes("session") && args.includes("info")) {
 			const firstSessionName = firstOpen.details?.sessionName as string;
 			assert.equal(closeDebug.restoreKey, createManagedSessionRestoreKey(tempDir, getManagedSessionRestoreScope(firstSessionName)));
 			const sessions = join(tempDir, ".agent-browser", "sessions");
-			const ownershipManifest = (await readdir(sessions)).find((entry) => entry.startsWith(".pi-agent-browser-owned-snapshots-v2-"));
+			const ownershipManifest = (await readdir(sessions)).find((entry) => entry.startsWith(".host-browser-owned-snapshots-v2-"));
 			assert.ok(ownershipManifest);
 			const ownershipDirectory = join(sessions, ownershipManifest);
 			const ownershipRecord = (await readdir(ownershipDirectory)).find((entry) => entry.endsWith(".json"));
@@ -810,7 +810,7 @@ if (args.includes("session") && args.includes("info")) {
 
 test("agentBrowserExtension removes oversized navigation-summary stdout spills after failed helper commands", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -853,7 +853,7 @@ if (isNavigationSummaryHelper) {
 
 test("runAgentBrowserProcess pins managed restore identity while preserving caller configuration", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-namespace-env-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-namespace-env-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs"); const config = process.env.AGENT_BROWSER_CONFIG; process.stdout.write(JSON.stringify({ success: true, data: { args: process.argv.slice(2), config, configContent: config ? fs.readFileSync(config, "utf8") : null, encryptionKey: process.env.AGENT_BROWSER_ENCRYPTION_KEY ?? null, home: process.env.HOME ?? null, namespace: process.env.AGENT_BROWSER_NAMESPACE ?? null, restore: process.env.AGENT_BROWSER_RESTORE ?? null } }));`);
 	execFileSync("git", ["init", "-q", tempDir], { stdio: "ignore" });
@@ -940,7 +940,7 @@ test("runAgentBrowserProcess pins managed restore identity while preserving call
 });
 
 test("runAgentBrowserProcess refuses a changed checkout identity before spawning", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-restore-identity-race-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-restore-identity-race-"));
 	const basePath = process.env.PATH ?? "";
 	const startedPath = join(tempDir, "started");
 	await writeFakeAgentBrowserBinary(tempDir, `require("node:fs").writeFileSync(${JSON.stringify(startedPath)}, "started");`);
@@ -957,7 +957,7 @@ test("runAgentBrowserProcess refuses a changed checkout identity before spawning
 				sessionName: "piab-managed",
 			});
 			assert.equal(context?.restoreDecision, "enabled");
-			await chmod(join(tempDir, ".git", "pi-agent-browser-project-generation-v1.json"), 0o644);
+			await chmod(join(tempDir, ".git", "host-browser-project-generation-v1.json"), 0o644);
 			const result = await withOwnedManagedSessionContext(context, () => runAgentBrowserProcess({
 				args,
 				cwd: tempDir,
@@ -974,7 +974,7 @@ test("runAgentBrowserProcess refuses a changed checkout identity before spawning
 });
 
 test("runAgentBrowserProcess refuses incompatible environment changes after planning", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-restore-env-race-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-restore-env-race-"));
 	const basePath = process.env.PATH ?? "";
 	const startedPath = join(tempDir, "started");
 	await writeFakeAgentBrowserBinary(tempDir, `require("node:fs").writeFileSync(${JSON.stringify(startedPath)}, "started");`);
@@ -1002,7 +1002,7 @@ test("runAgentBrowserProcess refuses incompatible environment changes after plan
 });
 
 test("runAgentBrowserProcess passes upstream state, session, file, and launch capabilities through", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-state-boundary-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-state-boundary-"));
 	const basePath = process.env.PATH ?? "";
 	const startedPath = join(tempDir, "started");
 	await writeFakeAgentBrowserBinary(tempDir, `require("node:fs").writeFileSync(${JSON.stringify(startedPath)}, "started");`);
@@ -1047,7 +1047,7 @@ test("runAgentBrowserProcess passes upstream state, session, file, and launch ca
 });
 
 test("runAgentBrowserProcess suppresses visible restore autosave tabs for headed managed launches", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-headed-autosave-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-headed-autosave-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `process.stdout.write(JSON.stringify({ success: true, data: { autosave: process.env.AGENT_BROWSER_AUTOSAVE_INTERVAL_MS ?? null } }));`);
 	execFileSync("git", ["init", "-q", tempDir], { stdio: "ignore" });
@@ -1079,7 +1079,7 @@ test("runAgentBrowserProcess suppresses visible restore autosave tabs for headed
 });
 
 test("runAgentBrowserProcess forwards the parent environment while preserving wrapper overrides", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,

@@ -1,5 +1,5 @@
 /**
- * Purpose: Exercise the configured-source pi-agent-browser lifecycle path through a real tmux-driven Pi process.
+ * Purpose: Exercise the configured-source host-browser lifecycle path through a real tmux-driven Pi process.
  * Responsibilities: Create isolated Pi settings and a temporary package source, inject deterministic lifecycle sentinels, drive `/reload` plus restart with exact `--session-id`, assert managed browser-session continuity and persisted artifact survival, capture transcripts, and clean up side effects.
  * Scope: Maintainer regression harness invoked through `npm run verify -- lifecycle` and embedded in `npm run verify -- release`; normal unit/package verification remains in the standard npm scripts.
  * Usage: Run with `node scripts/verify-lifecycle.mjs`, `npm run verify -- lifecycle`, or `node scripts/verify-lifecycle.mjs --keep-artifacts --verbose`.
@@ -252,7 +252,7 @@ export function injectLifecycleSentinelSource(source, token) {
 	const snippet = `
 	${SENTINEL_MARKER_START}
 	pi.registerCommand(${JSON.stringify(lifecycleSentinelCommand(token))}, {
-		description: "Append the pi-agent-browser lifecycle sentinel token.",
+		description: "Append the host-browser lifecycle sentinel token.",
 		handler: async () => {
 			pi.appendEntry("${SENTINEL_CUSTOM_TYPE}", { token: ${JSON.stringify(token)} });
 		},

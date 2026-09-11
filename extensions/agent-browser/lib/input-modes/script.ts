@@ -28,7 +28,7 @@ function findPackageRoot(startDir: string): string {
 	for (;;) {
 		if (existsSync(join(currentDir, "package.json"))) return currentDir;
 		const parentDir = dirname(currentDir);
-		if (parentDir === currentDir) throw new Error("Unable to resolve the pi-agent-browser-native package root.");
+		if (parentDir === currentDir) throw new Error("Unable to resolve the host-browser package root.");
 		currentDir = parentDir;
 	}
 }
@@ -57,7 +57,7 @@ function resolveScriptWorkerRuntime(): string {
 
 function resolveScriptWorkerPath(): string {
 	const workerPath = join(findPackageRoot(dirname(fileURLToPath(import.meta.url))), "dist", "extensions", "agent-browser", "script-worker.js");
-	if (!existsSync(workerPath)) throw new Error("Compiled script worker is missing; run npm run build or reinstall pi-agent-browser-native.");
+	if (!existsSync(workerPath)) throw new Error("Compiled script worker is missing; run npm run build or reinstall host-browser.");
 	return workerPath;
 }
 

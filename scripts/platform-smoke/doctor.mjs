@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 import { CAPABILITY_BASELINE } from "../agent-browser-capability-baseline.mjs";
 import { buildTargetBaseArgs } from "./crabbox-runner.mjs";
 
-const DEFAULT_UBUNTU_IMAGE = `pi-agent-browser-native-platform:node24-agent-browser${CAPABILITY_BASELINE.targetVersion}`;
+const DEFAULT_UBUNTU_IMAGE = `host-browser-platform:node24-agent-browser${CAPABILITY_BASELINE.targetVersion}`;
 
 function env(name) {
 	return process.env[name] ?? "";
@@ -232,7 +232,7 @@ function checkAgentBrowserVersion(expectedVersion, failures, command = "agent-br
 
 export async function runDoctor(config) {
 	const failures = { count: 0 };
-	const packageName = config?.packageName ?? "pi-agent-browser-native";
+	const packageName = config?.packageName ?? "host-browser";
 	const artifactRoot = config?.artifactRoot ?? ".artifacts/platform-smoke";
 	const nodeMajor = config?.nodeValidationMajor ?? 22;
 	const agentBrowserVersion = config?.agentBrowserVersion;

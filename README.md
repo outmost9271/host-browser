@@ -1,4 +1,4 @@
-# pi-agent-browser-native
+# host-browser
 
 A Pi extension that lets coding agents drive real browser sessions with a native `agent_browser` tool instead of brittle shell commands.
 
@@ -65,7 +65,7 @@ The result is optimized for agent work:
 - secrets and auth material must not be echoed into model-visible output
 - stale element refs need actionable recovery guidance, not generic failures
 
-`pi-agent-browser-native` keeps upstream `agent-browser` as the browser engine and adds the Pi-native wrapper behavior needed for reliable agent use.
+`host-browser` keeps upstream `agent-browser` as the browser engine and adds the Pi-native wrapper behavior needed for reliable agent use.
 
 ## What it does
 
@@ -92,7 +92,7 @@ Artifact results show known requested paths separately from reported/resolved lo
 
 ## Fastest way to try it
 
-Use Pi 0.84.0 or newer. This package keeps optional Pi core imports as wildcard `peerDependencies` because Pi package docs require the host Pi install to provide those packages, pins its direct Pi validation dependencies to 0.84.0, and makes older hosts a setup failure through `pi-agent-browser-doctor`. There are no compatibility shims for older Pi releases.
+Use Pi 0.84.0 or newer. This package keeps optional Pi core imports as wildcard `peerDependencies` because Pi package docs require the host Pi install to provide those packages, pins its direct Pi validation dependencies to 0.84.0, and makes older hosts a setup failure through `host-browser-doctor`. There are no compatibility shims for older Pi releases.
 
 Install upstream `agent-browser` first and make sure it is on `PATH`:
 
@@ -132,10 +132,10 @@ The native tool also gives agents absolute installed-package doc paths in its co
 Then install this Pi package:
 
 ```bash
-pi install npm:pi-agent-browser-native
+pi install npm:host-browser
 ```
 
-After updating `pi-agent-browser-native`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
+After updating `host-browser`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
 
 Start Pi and ask for a browser action:
 
@@ -146,7 +146,7 @@ Use the agent_browser tool to open https://example.com and then take an interact
 For a one-off trial without adding the package to your Pi settings:
 
 ```bash
-pi --no-extensions -e npm:pi-agent-browser-native
+pi --no-extensions -e npm:host-browser
 ```
 
 `--no-extensions` disables automatic extension loading, not Pi settings, configured package resolution, skills, prompts, themes, or context files.
@@ -156,7 +156,7 @@ Pi 0.84.0+ may ask whether to trust projects with trust-gated settings or resour
 For a specific published version:
 
 ```bash
-pi --no-extensions -e npm:pi-agent-browser-native@<version>
+pi --no-extensions -e npm:host-browser@<version>
 ```
 
 To install directly from source instead of npm:
@@ -176,9 +176,9 @@ pi --no-extensions -e https://github.com/fitchmultz/pi-agent-browser-native
 Run the read-only doctor when installing, upgrading, or debugging missing/duplicated tools:
 
 ```bash
-pi-agent-browser-doctor
+host-browser-doctor
 # one-off without permanent install:
-npm exec --package pi-agent-browser-native -- pi-agent-browser-doctor
+npm exec --package host-browser -- host-browser-doctor
 # from this checkout:
 npm run doctor
 ```
@@ -188,7 +188,7 @@ The doctor checks:
 - upstream `agent-browser` exists on `PATH`
 - the installed upstream is a stable version at or above the supported 0.35.0 floor; 0.37.0 remains the recommended baseline
 - `pi --version` meets the minimum Pi runtime floor for this release; older Pi versions are setup failures
-- Pi settings do not point at multiple active `pi-agent-browser-native` sources
+- Pi settings do not point at multiple active `host-browser` sources
 
 It does **not** edit Pi settings and does **not** run upstream `agent-browser doctor --fix`.
 
@@ -198,19 +198,19 @@ In a Linux user namespace, `/` may report an unmapped owner. Socket checks trust
 
 ## Optional package config and web search
 
-`pi-agent-browser-native` also reads package-owned config under Pi-scoped paths:
+`host-browser` also reads package-owned config under Pi-scoped paths:
 
-- global user config: `~/.pi/config/pi-agent-browser-native/config.json`
-- project config: `.pi/config/pi-agent-browser-native/config.json`
+- global user config: `~/.pi/config/host-browser/config.json`
+- project config: `.pi/config/host-browser/config.json`
 - explicit override: `PI_AGENT_BROWSER_CONFIG=/path/to/config.json`
 
-`pi install npm:pi-agent-browser-native` loads the extension, but it does **not** usually put the package helper on your shell `PATH`. You can configure web search by writing the config file directly, or run the helper through `npm exec` when you want a command to write it for you.
+`pi install npm:host-browser` loads the extension, but it does **not** usually put the package helper on your shell `PATH`. You can configure web search by writing the config file directly, or run the helper through `npm exec` when you want a command to write it for you.
 
 Inspect paths/status with the helper when available on `PATH`, or through npm:
 
 ```bash
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config paths
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config show
+npm exec --yes --package host-browser@latest -- host-browser-config paths
+npm exec --yes --package host-browser@latest -- host-browser-config show
 ```
 
 The optional `agent_browser_web_search` companion tool is available when a usable Exa or Brave credential source is configured or resolvable from startup config or trusted session config. It is not an `agent_browser` input mode and does not launch a browser; prefer it for current/live external web facts and URL discovery, then use `agent_browser` when the page itself needs interaction, screenshots, authenticated/profile content, or DOM inspection. Prefer it over automating public search-engine forms such as Google in headless browser jobs: those flows may be redirected to anti-bot or CAPTCHA pages, and this wrapper does not provide or recommend CAPTCHA bypass. If both keys are available, the default provider is Exa because its `/search` endpoint returns agent-friendly highlights and search modes; set `webSearch.preferredProvider` to `"brave"` when you prefer Brave Search.
@@ -220,8 +220,8 @@ Get an Exa API key from the [Exa dashboard](https://dashboard.exa.ai/api-keys) o
 Most config users should store env-var references in the Pi-scoped config:
 
 ```bash
-mkdir -p ~/.pi/config/pi-agent-browser-native
-cat > ~/.pi/config/pi-agent-browser-native/config.json <<'JSON'
+mkdir -p ~/.pi/config/host-browser
+cat > ~/.pi/config/host-browser/config.json <<'JSON'
 {
   "version": 1,
   "webSearch": {
@@ -239,33 +239,33 @@ JSON
 
 ```bash
 # Store env-var references in global config.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env EXA_API_KEY --global
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env BRAVE_API_KEY --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env EXA_API_KEY --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env BRAVE_API_KEY --global
 
 # Store an env-var reference in project config.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env EXA_API_KEY --project
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env EXA_API_KEY --project
 
 # Prefer Brave when both Exa and Brave keys are available, or clear with "auto".
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search prefer brave --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search prefer brave --global
 
 # Disable this package's built-in web-search tool in global config even if API keys are in the environment.
 # Global disable applies to normal runs unless a project config or PI_AGENT_BROWSER_CONFIG override explicitly re-enables it.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search disable --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search disable --global
 
 # Hard-disable web search for one run, regardless of project config, by using the highest-priority override layer.
-cat > /tmp/pi-agent-browser-disable-web-search.json <<'JSON'
+cat > /tmp/host-browser-disable-web-search.json <<'JSON'
 { "version": 1, "webSearch": { "enabled": false } }
 JSON
-PI_AGENT_BROWSER_CONFIG=/tmp/pi-agent-browser-disable-web-search.json pi
+PI_AGENT_BROWSER_CONFIG=/tmp/host-browser-disable-web-search.json pi
 
 # Store a plaintext key in Pi-scoped user config; output stays redacted.
-printf '%s' "$EXA_API_KEY" | npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-key --provider exa --stdin
+printf '%s' "$EXA_API_KEY" | npm exec --yes --package host-browser@latest -- host-browser-config web-search set-key --provider exa --stdin
 
 # Store a secret-manager command source. Add --project when you want the repo config to own the source.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-command "op read 'op://Private/Brave Search/API Key'" --provider brave --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-command "op read 'op://Private/Brave Search/API Key'" --provider brave --global
 ```
 
-Config merges in this order: global → project → `PI_AGENT_BROWSER_CONFIG` override. Under Pi 0.84.0+, the globally installed or CLI-loaded extension still loads project-local `.pi/config/pi-agent-browser-native/config.json` when Pi trust allows that project layer; it skips that project layer when Pi reports the project is untrusted or when Pi is launched with `--no-approve`. `webSearch.enabled` is evaluated after the loaded layers merge. Use `web-search disable --global` for a user default, `web-search disable --project` for one repo, and a `PI_AGENT_BROWSER_CONFIG` override with `{ "webSearch": { "enabled": false } }` when web search must stay off even if project config exists. Loaded config may use plaintext, custom environment aliases, interpolation literals, malformed-or-late-bound `$` values, and `!command` credential sources; the resolved secret is passed to the provider request while tool content, details, status output, and docs examples stay redacted. `web-search set-key`, `set-command`, and `clear` require `--provider`; `set-env` infers Exa/Brave from `EXA_API_KEY` or `BRAVE_API_KEY` unless you pass `--provider`.
+Config merges in this order: global → project → `PI_AGENT_BROWSER_CONFIG` override. Under Pi 0.84.0+, the globally installed or CLI-loaded extension still loads project-local `.pi/config/host-browser/config.json` when Pi trust allows that project layer; it skips that project layer when Pi reports the project is untrusted or when Pi is launched with `--no-approve`. `webSearch.enabled` is evaluated after the loaded layers merge. Use `web-search disable --global` for a user default, `web-search disable --project` for one repo, and a `PI_AGENT_BROWSER_CONFIG` override with `{ "webSearch": { "enabled": false } }` when web search must stay off even if project config exists. Loaded config may use plaintext, custom environment aliases, interpolation literals, malformed-or-late-bound `$` values, and `!command` credential sources; the resolved secret is passed to the provider request while tool content, details, status output, and docs examples stay redacted. `web-search set-key`, `set-command`, and `clear` require `--provider`; `set-env` infers Exa/Brave from `EXA_API_KEY` or `BRAVE_API_KEY` unless you pass `--provider`.
 
 For Exa, the effective mode is the per-call `searchType`, then `webSearch.defaultSearchType`, then `auto`. A research-heavy coding workflow should set the config default to `deep-lite`; callers can still override it per search. Users who do not opt in keep the existing `auto` latency.
 
@@ -280,7 +280,7 @@ For Exa, the effective mode is the per-call `searchType`, then `webSearch.defaul
 
 ```json
 {
-  "query": "pi-agent-browser-native agent_browser_web_search searchType defaults",
+  "query": "host-browser agent_browser_web_search searchType defaults",
   "searchType": "deep-lite",
   "count": 5
 }
@@ -294,10 +294,10 @@ The same config file can record conservative browser defaults such as a profile 
 
 ```bash
 # Ask the agent to use this profile for signed-in/account-specific work.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config browser profile set "Profile 1" --policy authenticated-only
+npm exec --yes --package host-browser@latest -- host-browser-config browser profile set "Profile 1" --policy authenticated-only
 
 # Ask the agent to launch a different Chromium-compatible browser executable.
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config browser executable set "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+npm exec --yes --package host-browser@latest -- host-browser-config browser executable set "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 ```
 
 This adds agent guidance for signed-in/account-specific tasks; current releases do not auto-inject `--profile` or `--executable-path` for every launch. Configure profile/executable guidance globally, in trusted project config, or through `PI_AGENT_BROWSER_CONFIG`. Ask the agent to run `agent_browser` with `args: ["profiles"]` and `args: ["doctor"]` when profile resolution fails. The upstream `profiles` command lists Chrome profiles from Chrome's user data directory; `Default` is not canonical on every machine. Use the displayed profile directory name, a full profile/user-data directory path when upstream accepts one, or a configured `browser.executablePath` plus `sessionMode: "fresh"` for a different Chromium-compatible browser.
@@ -737,7 +737,7 @@ npm run verify -- release
 
 ## How it works
 
-`pi-agent-browser-native` is intentionally thin:
+`host-browser` is intentionally thin:
 
 1. Pi loads the compiled `dist/extensions/agent-browser/index.js` entrypoint from the package manifest; TypeScript under `extensions/` remains the source of truth and `npm run build` regenerates `dist/` before packing.
 2. The extension registers `agent_browser` and, when enabled with a usable credential source, the optional `agent_browser_web_search` companion.
@@ -793,7 +793,7 @@ Installed-package validation after publish:
 
 ```bash
 npm run verify -- package-pi
-pi --no-extensions -e npm:pi-agent-browser-native@<version>
+pi --no-extensions -e npm:host-browser@<version>
 ```
 
 ## Generated native-tool playbook notes

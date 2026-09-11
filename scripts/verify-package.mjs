@@ -1,5 +1,5 @@
 /**
- * Purpose: Verify the published npm tarball shape, package-path Pi loadability, and key repo release prerequisites for pi-agent-browser.
+ * Purpose: Verify the published npm tarball shape, package-path Pi loadability, and key repo release prerequisites for host-browser.
  * Responsibilities: Parse CLI options, run `npm pack`, validate required and forbidden repo and packed files, catch repo-local auto-discovery shims, smoke-load and deterministically smoke-execute the packed package in an isolated Pi resource loader when requested, and print concise release reports.
  * Scope: Packaging and release verification only; code compilation/tests stay in the normal npm verify scripts.
  * Usage: Run with `node scripts/verify-package.mjs`, `node scripts/verify-package.mjs --smoke-pi`, `npm run verify -- package`, `npm run verify -- package-pi`, or `npm run verify -- release`.
@@ -145,7 +145,7 @@ async function getDryRunPackResult(cwd = process.cwd()) {
 }
 
 export async function packToTemporaryPackageDir(cwd = process.cwd()) {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-package-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-package-"));
 	let tarballPath;
 
 	try {
@@ -298,7 +298,7 @@ function summarizeToolResult(result) {
 }
 
 async function createFakeAgentBrowserBinary() {
-	const binDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-fake-bin-"));
+	const binDir = await mkdtemp(join(tmpdir(), "host-browser-fake-bin-"));
 	const nodeExecutable = JSON.stringify(process.execPath);
 	const fakeScript = `#!/usr/bin/env node
 const args = process.argv.slice(2);
@@ -521,7 +521,7 @@ export async function verifyPackagedPiLoad(options = {}) {
 	let tempAgentDir;
 
 	try {
-		tempAgentDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-agent-"));
+		tempAgentDir = await mkdtemp(join(tmpdir(), "host-browser-agent-"));
 		// The tarball already contains dist; install only its runtime dependencies, as a consumer would.
 		await execFile(npmCommand, ["install", "--omit=dev", "--omit=peer", "--ignore-scripts", "--no-audit", "--no-fund"], {
 			...npmExecOptions,

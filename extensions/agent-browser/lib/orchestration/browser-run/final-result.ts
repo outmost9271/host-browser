@@ -88,7 +88,7 @@ export function buildMissingBinaryMessage(): string {
 	return [
 		"agent-browser is required but was not found on PATH.",
 		"This project does not bundle agent-browser.",
-		"Run `pi-agent-browser-doctor` for package/PATH diagnostics, then install agent-browser using the upstream docs:",
+		"Run `host-browser-doctor` for package/PATH diagnostics, then install agent-browser using the upstream docs:",
 		"- https://agent-browser.dev/",
 		"- https://github.com/vercel-labs/agent-browser",
 	].join("\n");

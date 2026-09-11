@@ -308,7 +308,7 @@ test("buildToolPresentation explains unsupported keyboard press commands", async
 test("buildToolPresentation explains browser profile config failures with diagnostics next actions", async () => {
 	for (const errorText of [
 		"No Chrome user data directory found. Cannot resolve profile name.",
-		'Chrome profile "pi-agent-browser-nonexistent-dogfood-profile" not found. Available profiles:\n  Default (user)\nIf you meant a directory path, use a full path (e.g., /path/to/profile).',
+		'Chrome profile "host-browser-nonexistent-dogfood-profile" not found. Available profiles:\n  Default (user)\nIf you meant a directory path, use a full path (e.g., /path/to/profile).',
 	]) {
 		const presentation = await buildToolPresentation({
 			args: ["--profile", "Default", "open", "https://example.com"],

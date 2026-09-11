@@ -179,7 +179,7 @@ async function assertSuccessfulStep(options: {
 
 export async function runAgentBrowserDogfood(options: DogfoodOptions = {}): Promise<DogfoodStepReport[]> {
 	const cwd = options.cwd ?? process.cwd();
-	const artifactDir = resolve(options.artifactDir ?? await mkdtemp(join(tmpdir(), "pi-agent-browser-dogfood-")));
+	const artifactDir = resolve(options.artifactDir ?? await mkdtemp(join(tmpdir(), "host-browser-dogfood-")));
 	const shouldRemoveArtifacts = !options.keepArtifacts && !options.artifactDir;
 	await mkdir(artifactDir, { recursive: true });
 	const jobScreenshotPath = join(artifactDir, "job.png");

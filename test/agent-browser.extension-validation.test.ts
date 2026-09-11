@@ -63,7 +63,7 @@ test("agentBrowserExtension names its tools in every prompt guideline", () => {
 });
 
 test("agentBrowserExtension keeps concise browser guidance plus installed doc pointers in tool metadata", async () => {
-	const isolatedHome = await mkdtemp(join(tmpdir(), "pi-agent-browser-guidance-test-"));
+	const isolatedHome = await mkdtemp(join(tmpdir(), "host-browser-guidance-test-"));
 	await withPatchedEnv({ BRAVE_API_KEY: "demo-key", EXA_API_KEY: undefined, HOME: isolatedHome, PI_AGENT_BROWSER_CONFIG: undefined }, async () => {
 		const harness = createExtensionHarness({ cwd: process.cwd() });
 		assert.deepEqual([...harness.handlers.keys()].sort(), ["before_agent_start", "session_shutdown", "session_start", "session_tree", "tool_call", "tool_result"]);
@@ -202,8 +202,8 @@ test("built extension prompt doc pointers resolve to package-root docs", { skip:
 });
 
 test("agentBrowserExtension includes configured browser executable guidance", async () => {
-	const isolatedHome = await mkdtemp(join(tmpdir(), "pi-agent-browser-executable-guidance-test-"));
-	const configPath = join(isolatedHome, ".pi", "config", "pi-agent-browser-native", "config.json");
+	const isolatedHome = await mkdtemp(join(tmpdir(), "host-browser-executable-guidance-test-"));
+	const configPath = join(isolatedHome, ".pi", "config", "host-browser", "config.json");
 	await mkdir(dirname(configPath), { recursive: true });
 	await writeFile(configPath, JSON.stringify({
 		version: 1,
@@ -221,12 +221,12 @@ test("agentBrowserExtension includes configured browser executable guidance", as
 });
 
 test("agentBrowserExtension uses project browser launch guidance when project config shadows global", async () => {
-	const root = await mkdtemp(join(tmpdir(), "pi-agent-browser-project-shadow-guidance-test-"));
+	const root = await mkdtemp(join(tmpdir(), "host-browser-project-shadow-guidance-test-"));
 	try {
 		const cwd = join(root, "repo");
 		const isolatedHome = join(root, "home");
-		const globalConfigPath = join(isolatedHome, ".pi", "config", "pi-agent-browser-native", "config.json");
-		const projectConfigPath = join(cwd, ".pi", "config", "pi-agent-browser-native", "config.json");
+		const globalConfigPath = join(isolatedHome, ".pi", "config", "host-browser", "config.json");
+		const projectConfigPath = join(cwd, ".pi", "config", "host-browser", "config.json");
 		await mkdir(dirname(globalConfigPath), { recursive: true });
 		await mkdir(dirname(projectConfigPath), { recursive: true });
 		await writeFile(globalConfigPath, JSON.stringify({
@@ -270,11 +270,11 @@ test("agentBrowserExtension uses project browser launch guidance when project co
 });
 
 test("agentBrowserExtension includes project-local browser launch guidance", async () => {
-	const root = await mkdtemp(join(tmpdir(), "pi-agent-browser-project-guidance-test-"));
+	const root = await mkdtemp(join(tmpdir(), "host-browser-project-guidance-test-"));
 	try {
 		const cwd = join(root, "repo");
 		const isolatedHome = join(root, "home");
-		const configPath = join(cwd, ".pi", "config", "pi-agent-browser-native", "config.json");
+		const configPath = join(cwd, ".pi", "config", "host-browser", "config.json");
 		await mkdir(dirname(configPath), { recursive: true });
 		await mkdir(isolatedHome, { recursive: true });
 		await writeFile(configPath, JSON.stringify({
@@ -332,7 +332,7 @@ test("agentBrowserExtension rejects unsupported public schema fields", () => {
 });
 
 test("agentBrowserExtension rejects unsupported extra press/key args before upstream spawn", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-press-validation-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-press-validation-"));
 	try {
 		const harness = createExtensionHarness({ cwd: tempDir });
 		await runExtensionEvent(harness.handlers, "session_start", { reason: "new" }, harness.ctx);
@@ -354,7 +354,7 @@ test("agentBrowserExtension rejects unsupported extra press/key args before upst
 });
 
 test("agentBrowserExtension rejects duplicate explicit artifact destinations inside one batch", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-duplicate-artifact-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-duplicate-artifact-"));
 	try {
 		assert.equal(
 			canonicalizeExplicitArtifactDestination(tempDir, "capture.png", "darwin"),
@@ -483,7 +483,7 @@ test("agentBrowserExtension rejects duplicate explicit artifact destinations ins
 
 test("agentBrowserExtension handles bare wait commands through artifact preflight", { concurrency: false }, async () => {
 	assert.equal(getExplicitArtifactDestination(["wait"]), undefined);
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-bare-wait-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-bare-wait-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -512,7 +512,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: { waited: true }
 });
 
 test("agentBrowserExtension reports no-op scroll diagnostics with recovery next actions", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-noop-scroll-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-noop-scroll-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "scroll-state.json");
 	const basePath = process.env.PATH ?? "";
@@ -608,7 +608,7 @@ process.stdout.write(JSON.stringify({ success: true, data }));`,
 });
 
 test("agentBrowserExtension rejects unsupported text= scroll targets with executable native recovery", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-scroll-text-recovery-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-scroll-text-recovery-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -658,7 +658,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: { title: "Modal"
 });
 
 test("agentBrowserExtension bounds dialog recovery commands and exposes recovery actions", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-dialog-timeout-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-dialog-timeout-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -703,7 +703,7 @@ if (args.includes("dialog") || (args.includes("eval") && stdin.includes("confirm
 });
 
 test("agentBrowserExtension scrolls explicit CSS containers before falling back to page scroll", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-container-scroll-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-container-scroll-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -753,7 +753,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension handles scroll to end before upstream page scroll", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-page-scroll-end-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-page-scroll-end-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -802,7 +802,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension scrolls the document directly before upstream wheel fallback", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-page-scroll-direction-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-page-scroll-direction-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -860,7 +860,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension filters snapshot refs with wrapper search and role flags", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-snapshot-filter-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-snapshot-filter-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -906,7 +906,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { ok: true } }));`,
 });
 
 test("agentBrowserExtension surfaces rendered text missing from the accessibility snapshot", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-snapshot-rendered-search-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-snapshot-rendered-search-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -957,7 +957,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { ok: true } }));`,
 });
 
 test("agentBrowserExtension reports wrapper snapshot diffs against previous refs", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-snapshot-diff-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-snapshot-diff-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1000,7 +1000,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { ok: true } }));`,
 });
 
 test("agentBrowserExtension reports wrapper snapshot viewport metadata", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-snapshot-viewport-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-snapshot-viewport-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1044,7 +1044,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { ok: true } }));`,
 });
 
 test("agentBrowserExtension filters network requests to the current page origin", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-network-filter-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-network-filter-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1094,7 +1094,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { ok: true } }));`,
 });
 
 test("agentBrowserExtension reports focused combobox diagnostics with option-opening next actions", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-combobox-focus-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-combobox-focus-"));
 	const statePath = join(tempDir, "combobox-state.json");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1183,7 +1183,7 @@ process.stdout.write(JSON.stringify({ success: true, data: command === "eval" ? 
 });
 
 test("agentBrowserExtension preserves combobox diagnostics after semanticAction visible-ref resolution", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-combobox-visible-ref-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-combobox-visible-ref-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "combobox-visible-ref-state.json");
 	const basePath = process.env.PATH ?? "";
@@ -1335,7 +1335,7 @@ test("mergeSessionArtifactManifest retains the active restart when the recent wi
 });
 
 test("agentBrowserExtension keeps a direct restart pending through outer manifest merge and replay", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-restart-manifest-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-restart-manifest-"));
 	const nodeBinDir = dirname(process.execPath);
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
 const args = process.argv.slice(2);
@@ -1534,7 +1534,7 @@ process.stdout.write(JSON.stringify(command === "batch"
 });
 
 test("agentBrowserExtension warns after record start when ffmpeg is missing", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-recording-ffmpeg-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-recording-ffmpeg-"));
 	const noRecordingMarker = join(tempDir, "no-recording");
 	const nodeBinDir = dirname(process.execPath);
 	const missingFfmpegPath = process.platform === "android" ? join(tempDir, "node-only") : nodeBinDir;
@@ -1924,7 +1924,7 @@ if (firstCallFailure) process.exit(1);`,
 });
 
 test("agentBrowserExtension retires recording reservations by namespace plus session", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-recording-namespace-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-recording-namespace-"));
 	const nodeBinDir = dirname(process.execPath);
 	await writeFakeAgentBrowserBinary(tempDir, `const args = process.argv.slice(2);
 const valueFlags = new Set(["--namespace", "--session"]);
@@ -1969,7 +1969,7 @@ process.stdout.write(JSON.stringify({ success: true, data }));`);
 });
 
 test("agentBrowserExtension persists cross-branch recording close tombstones across reload", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-recording-tombstone-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-recording-tombstone-"));
 	const nodeBinDir = dirname(process.execPath);
 	await writeFakeAgentBrowserBinary(tempDir, `const args = process.argv.slice(2);
 const valueFlags = new Set(["--session"]);
@@ -2191,7 +2191,7 @@ test("agentBrowserExtension renders long TUI output compactly without changing m
 });
 
 test("agentBrowserExtension blocks direct and wrapped agent-browser bash unless the prompt, env, or package dev cwd explicitly allows it", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-bash-policy-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-bash-policy-"));
 	const defaultHarness = createExtensionHarness({ cwd: tempDir, prompt: "Open a page and summarize it." });
 	for (const command of [
 		"agent-browser open https://example.com",
@@ -2259,8 +2259,8 @@ test("agentBrowserExtension blocks direct and wrapped agent-browser bash unless 
 		assert.deepEqual(envAllowed, []);
 	});
 
-	const packageDevDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-package-dev-"));
-	await writeFile(join(packageDevDir, "package.json"), JSON.stringify({ name: "pi-agent-browser-native" }), "utf8");
+	const packageDevDir = await mkdtemp(join(tmpdir(), "host-browser-package-dev-"));
+	await writeFile(join(packageDevDir, "package.json"), JSON.stringify({ name: "host-browser" }), "utf8");
 	const packageDevHarness = createExtensionHarness({ cwd: packageDevDir, prompt: "Open a page and summarize it." });
 	const packageDevAllowed = await runExtensionEventResults(
 		packageDevHarness.handlers,
@@ -2275,7 +2275,7 @@ test("agentBrowserExtension blocks direct and wrapped agent-browser bash unless 
 });
 
 test("agentBrowserExtension keeps the page verified after a failed eval by probing the live URL", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-eval-reverify-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-eval-reverify-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -2333,7 +2333,7 @@ process.stdout.write(JSON.stringify(out));`,
 });
 
 test("agentBrowserExtension skips the title probe when the live URL already has an observed title", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-title-reuse-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-title-reuse-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "nav-state.json");
 	const basePath = process.env.PATH ?? "";

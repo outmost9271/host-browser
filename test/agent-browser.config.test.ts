@@ -1,5 +1,5 @@
 /**
- * Purpose: Verify pi-agent-browser-native package config loading, credential classification, safety rules, and redaction helpers.
+ * Purpose: Verify host-browser package config loading, credential classification, safety rules, and redaction helpers.
  */
 
 import assert from "node:assert/strict";
@@ -29,7 +29,7 @@ async function writeJson(path: string, value: unknown): Promise<void> {
 }
 
 async function createConfigFixture() {
-	const root = await mkdtemp(join(tmpdir(), "pi-agent-browser-config-test-"));
+	const root = await mkdtemp(join(tmpdir(), "host-browser-config-test-"));
 	const home = join(root, "home");
 	const cwd = join(root, "repo");
 	await mkdir(home, { recursive: true });
@@ -37,8 +37,8 @@ async function createConfigFixture() {
 	return {
 		cwd,
 		env: { HOME: home, [BRAVE_API_KEY_ENV]: undefined, [EXA_API_KEY_ENV]: undefined } as NodeJS.ProcessEnv,
-		globalPath: join(home, ".pi", "config", "pi-agent-browser-native", "config.json"),
-		projectPath: join(cwd, ".pi", "config", "pi-agent-browser-native", "config.json"),
+		globalPath: join(home, ".pi", "config", "host-browser", "config.json"),
+		projectPath: join(cwd, ".pi", "config", "host-browser", "config.json"),
 		root,
 	};
 }

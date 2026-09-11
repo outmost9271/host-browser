@@ -46,7 +46,7 @@ async function withFakeFetch<T>(handler: (input: string | URL | Request, init?: 
 }
 
 async function createFixture() {
-	const root = await mkdtemp(join(tmpdir(), "pi-agent-browser-web-search-test-"));
+	const root = await mkdtemp(join(tmpdir(), "host-browser-web-search-test-"));
 	const home = join(root, "home");
 	const cwd = join(root, "repo");
 	await mkdir(home, { recursive: true });
@@ -55,7 +55,7 @@ async function createFixture() {
 		cwd,
 		home,
 		overrideConfigPath: join(root, "override-config.json"),
-		projectConfigPath: join(cwd, ".pi", "config", "pi-agent-browser-native", "config.json"),
+		projectConfigPath: join(cwd, ".pi", "config", "host-browser", "config.json"),
 	};
 }
 
@@ -137,7 +137,7 @@ test("project config can disable web-search execution despite env fallback", asy
 			assert.ok(harness.getTool("agent_browser"));
 			await assert.rejects(
 				() => executeRegisteredTool(tool, harness.ctx, { query: "disabled project config" }),
-				/agent_browser_web_search is disabled by pi-agent-browser-native config/,
+				/agent_browser_web_search is disabled by host-browser config/,
 			);
 		});
 	});

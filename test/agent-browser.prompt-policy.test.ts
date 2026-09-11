@@ -1,5 +1,5 @@
 /**
- * Purpose: Verify prompt-derived policy helpers for the pi-agent-browser extension.
+ * Purpose: Verify prompt-derived policy helpers for the host-browser extension.
  * Responsibilities: Assert direct agent-browser bash allowance, browser-prompt detection, stop boundaries, and requested artifact extraction.
  * Scope: Unit-style Node test-runner coverage for pure prompt-policy helpers.
  */

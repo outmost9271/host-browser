@@ -147,7 +147,7 @@ async function closeManagedSessionIfPresent(options: { cwd: string; sessionName?
 }
 
 async function assertRealUpstreamUnrecordedDaemonReuseFailsClosed(): Promise<void> {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-orphan-daemon-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-orphan-daemon-"));
 	const socketDir = join(tempDir, "sockets");
 	let sessionName: string | undefined;
 	try {
@@ -187,7 +187,7 @@ async function assertRealUpstreamUnrecordedDaemonReuseFailsClosed(): Promise<voi
 
 async function assertRealUpstreamRestoreStorageSymlinkFailsClosed(): Promise<void> {
 	if (process.platform === "win32") return;
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-symlink-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-symlink-"));
 	const socketDir = join(tempDir, "sockets");
 	const targetDir = join(tempDir, "outside-state-target");
 	await initializeGitProject(tempDir);
@@ -221,7 +221,7 @@ async function assertRealUpstreamRestoreStorageSymlinkFailsClosed(): Promise<voi
 
 async function assertRealUpstreamNestedRestoreStorageSymlinkFailsClosed(): Promise<void> {
 	if (process.platform === "win32") return;
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-nested-symlink-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-nested-symlink-"));
 	const socketDir = join(tempDir, "sockets");
 	const outsideStateFile = join(tempDir, "outside-candidate.json");
 	const temporaryDirectory = join(tempDir, ".agent-browser", "sessions", ".tmp");
@@ -256,7 +256,7 @@ async function assertRealUpstreamNestedRestoreStorageSymlinkFailsClosed(): Promi
 
 async function assertRealUpstreamRelativeHomeFailsClosed(): Promise<void> {
 	if (process.platform === "win32") return;
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-relative-home-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-relative-home-"));
 	const socketDir = join(tempDir, "sockets");
 	let sessionName: string | undefined;
 	try {
@@ -575,7 +575,7 @@ if (!REAL_UPSTREAM_ENABLED) {
 		const shapes = await readOutputShapesFixture();
 		assert.equal(shapes.targetVersion, CAPABILITY_BASELINE.targetVersion, "output-shape fixture must track the canonical target version");
 
-		const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-upstream-"));
+		const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-upstream-"));
 		const socketDir = join(tempDir, "sockets");
 		const downloadDir = join(tempDir, "Downloads");
 		await initializeGitProject(tempDir);
@@ -1175,7 +1175,7 @@ if (!REAL_UPSTREAM_ENABLED) {
 		const shapes = await readOutputShapesFixture();
 		assert.equal(shapes.targetVersion, CAPABILITY_BASELINE.targetVersion, "output-shape fixture must track the canonical target version");
 
-		const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-real-upstream-plugins-"));
+		const tempDir = await mkdtemp(join(tmpdir(), "host-browser-real-upstream-plugins-"));
 		try {
 			await withPatchedEnv({ HOME: tempDir, AGENT_BROWSER_PLUGINS: "[]" }, async () => {
 				const harness = createExtensionHarness({ cwd: tempDir });

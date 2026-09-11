@@ -1,5 +1,5 @@
 /**
- * Purpose: Provide shared test harness utilities for the pi-agent-browser extension test suites.
+ * Purpose: Provide shared test harness utilities for the host-browser extension test suites.
  * Responsibilities: Build fake pi extension contexts, run registered extension events/tools, patch process env safely, create fake agent-browser binaries, read invocation logs, and manage child-process fixtures.
  * Scope: Test-only utilities for `test/agent-browser.*.test.ts`; production code must not import this module.
  * Usage: Import focused helpers from `./helpers/agent-browser-harness.js` inside Node test-runner suites.
@@ -30,7 +30,7 @@ import { TARGET_AGENT_BROWSER_VERSION_LABEL } from "../../scripts/agent-browser-
 
 export const TEST_SESSION_ID = "12345678-1234-5678-9abc-def012345678";
 export const DOWNLOAD_FIXTURE_CONTENT = "download contract fixture report\n";
-export const DOWNLOAD_FIXTURE_FILENAME = "pi-agent-browser-wait-download-contract.txt";
+export const DOWNLOAD_FIXTURE_FILENAME = "host-browser-wait-download-contract.txt";
 
 export interface FixtureServer {
 	baseUrl: string;

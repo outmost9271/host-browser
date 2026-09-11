@@ -40,7 +40,7 @@ async function listenOnLoopback(server: Server): Promise<number> {
 }
 
 test("agentBrowserExtension saves simple anchor downloads directly to the requested path", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-anchor-download-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-anchor-download-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	const server = createServer((req, res) => {
@@ -103,7 +103,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension falls back when a non-loopback page points at loopback", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-anchor-download-remote-page-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-anchor-download-remote-page-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -155,7 +155,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension falls back to upstream download on anchor redirects", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-anchor-download-redirect-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-anchor-download-redirect-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	const server = createServer((req, res) => {
@@ -218,7 +218,7 @@ process.stdin.on("end", () => {
 });
 
 test("agentBrowserExtension returns retry next actions for failed direct download verification", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-direct-download-failure-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-direct-download-failure-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -247,7 +247,7 @@ process.exit(1);`,
 });
 
 test("agentBrowserExtension keeps stale-ref guidance after same-tab verification", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-stale-ref-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-stale-ref-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -303,7 +303,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { tabs: [
 });
 
 test("agentBrowserExtension keeps per-step stale-ref guidance for a verified user batch", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-stale-batch-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-stale-batch-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -360,7 +360,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { tabs: [
 });
 
 test("agentBrowserExtension reports direct fallback failures with the effective invocation", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -404,7 +404,7 @@ process.exit(1);`,
 
 test("agentBrowserExtension discards oversized malformed output instead of persisting browser secrets", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const sessionDir = await mkdtemp(join(tmpdir(), "pi-session-dir-"));
 	const sessionFile = join(sessionDir, "session.jsonl");
 	const basePath = process.env.PATH ?? "";
@@ -442,7 +442,7 @@ test("agentBrowserExtension discards oversized malformed output instead of persi
 
 test("agentBrowserExtension discards malformed spills when only a session directory is available", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const sessionDir = await mkdtemp(join(tmpdir(), "pi-session-dir-only-"));
 	const basePath = process.env.PATH ?? "";
 	const sentinel = "RQ-0006-session-dir-only-sentinel";
@@ -475,7 +475,7 @@ test("agentBrowserExtension discards malformed spills when only a session direct
 
 test("agentBrowserExtension discards malformed spills without session artifacts", { concurrency: false }, async () => {
 	await cleanupSecureTempArtifacts();
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const basePath = process.env.PATH ?? "";
 	const sentinel = "RQ-0006-temp-parse-failure-sentinel";
 	await writeFakeAgentBrowserBinary(

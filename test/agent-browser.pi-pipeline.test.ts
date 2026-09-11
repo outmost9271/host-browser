@@ -170,7 +170,7 @@ function registerPipelineProvider(modelRuntime: ModelRuntime, toolArguments: Rec
 }
 
 async function runPipelinePrompt(options: { fakeScript: string; toolArguments: Record<string, unknown> }): Promise<PipelinePromptResult> {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-pipeline-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-pipeline-"));
 	const sessionDir = join(tempDir, "sessions");
 	const invocationLogPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";

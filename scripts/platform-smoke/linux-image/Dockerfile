@@ -1,4 +1,4 @@
-# Local Crabbox Ubuntu/Linux target image for pi-agent-browser-native platform smoke.
+# Local Crabbox Ubuntu/Linux target image for host-browser platform smoke.
 # Build with npm run smoke:platform:ubuntu-image so the agent-browser version
 # comes from scripts/agent-browser-capability-baseline.mjs.
 

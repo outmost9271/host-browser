@@ -50,7 +50,7 @@ async function waitForLoggedCommand(logPath: string, command: string, timeoutMs 
 }
 
 test("agentBrowserExtension accepts action-specific electron schema and routes list without upstream spawn", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-schema-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-schema-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -226,7 +226,7 @@ test("Electron list timeout guidance never recommends an unsupported nested time
 });
 
 test("Electron status separates cleanup history from live resources and preserves replay selection", { concurrency: false }, async (t) => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-status-history-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-status-history-"));
 	const basePath = process.env.PATH ?? "";
 	try {
 		const app = await writeFakeLaunchableElectronApp({ applicationsDir: tempDir, bundleId: "com.example.StatusHistory", launchLogPath: join(tempDir, "launch.log"), name: "Status History" });
@@ -295,7 +295,7 @@ test("Electron status separates cleanup history from live resources and preserve
 });
 
 test("agentBrowserExtension cleans Electron after post-launch managed policy rejection", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-policy-reject-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-policy-reject-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -334,7 +334,7 @@ if (args.includes("session") && args.includes("info")) {
 });
 
 test("agentBrowserExtension allows local Electron snapshot handoff", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-protected-handoff-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-protected-handoff-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -370,7 +370,7 @@ test("agentBrowserExtension allows local Electron snapshot handoff", { concurren
 
 
 test("agentBrowserExtension cleans an Electron launch canceled during snapshot handoff", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-canceled-handoff-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-canceled-handoff-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -416,7 +416,7 @@ else {
 
 
 test("agentBrowserExtension launches Electron with isolated profile, snapshot handoff, status, and cleanup", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-launch-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-launch-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -594,7 +594,7 @@ test("agentBrowserExtension launches Electron with isolated profile, snapshot ha
 });
 
 test("agentBrowserExtension retains headed autosave policy for Electron cleanup close", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-headed-cleanup-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-headed-cleanup-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -645,7 +645,7 @@ test("agentBrowserExtension retains headed autosave policy for Electron cleanup 
 });
 
 test("agentBrowserExtension applies managed restore policy to every current-session electron.probe helper", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-probe-restore-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-probe-restore-"));
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const basePath = process.env.PATH ?? "";
 	execFileSync("git", ["init", "-q", tempDir], { stdio: "ignore" });
@@ -692,7 +692,7 @@ if (args.includes("session") && args.includes("info")) {
 });
 
 test("agentBrowserExtension allows follow-up inspection on local file pages", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-normal-file-text-scope-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-normal-file-text-scope-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
 		tempDir,
@@ -729,7 +729,7 @@ process.stdout.write(JSON.stringify({ success: true, data }));`,
 });
 
 test("agentBrowserExtension follows a live Electron probe onto local pages", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-probe-local-drift-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-probe-local-drift-"));
 	const logPath = join(tempDir, "agent-browser.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
@@ -768,7 +768,7 @@ process.stdout.write(JSON.stringify({ success: true, data }));`);
 
 
 test("agentBrowserExtension reports Electron session mismatch and launchId-aware probe", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-mismatch-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-mismatch-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -870,7 +870,7 @@ test("agentBrowserExtension reports Electron session mismatch and launchId-aware
 });
 
 test("agentBrowserExtension surfaces Electron post-command death and fill verification", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-post-command-health-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-post-command-health-"));
 	const applicationsDir = join(tempDir, "Applications");
 	const upstreamLogPath = join(tempDir, "agent-browser.log");
 	const launchLogPath = join(tempDir, "electron-launch.log");
@@ -984,7 +984,7 @@ else write({ ok: true, title: currentPage().title, url: currentPage().url });`,
 });
 
 test("agentBrowserExtension applies electron.probe timeoutMs to bounded subprocess probes", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-electron-probe-timeout-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-electron-probe-timeout-"));
 	const logPath = join(tempDir, "agent-browser.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1046,7 +1046,7 @@ setTimeout(() => {
 });
 
 test("agentBrowserExtension recommends tab recovery after No active page snapshot failures", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-no-active-page-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-no-active-page-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -1180,7 +1180,7 @@ if (command === "connect") {
 });
 
 test("agentBrowserExtension invalidates refs after No active page snapshot failures inside batch", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-no-active-page-batch-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-no-active-page-batch-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(

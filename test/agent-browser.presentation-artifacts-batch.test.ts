@@ -69,7 +69,7 @@ test("buildToolPresentation formats download results as saved-file summaries", a
 });
 
 test("buildToolPresentation adds dense-page guidance for annotated screenshots", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-annotated-guidance-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-annotated-guidance-"));
 	try {
 		const imagePath = join(tempDir, "annotated.png");
 		await writeFile(imagePath, "fake image");
@@ -156,25 +156,25 @@ test("buildToolPresentation renders metadata-first summaries for file artifact c
 	for (const item of cases) {
 		const presentation = await buildToolPresentation({
 			commandInfo: item.commandInfo,
-			cwd: "/tmp/pi-agent-browser-artifact-tests",
+			cwd: "/tmp/host-browser-artifact-tests",
 			envelope: { success: true, data: item.data },
 		});
 
 		assert.equal(presentation.content[0]?.type, "text");
 		assert.match((presentation.content[0] as { text: string }).text, new RegExp(item.expectedText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-		assert.equal(presentation.summary, `Artifact verification failed: requested ${item.expectedKind} was not found at ${join("/tmp/pi-agent-browser-artifact-tests", item.data.path)}.`);
+		assert.equal(presentation.summary, `Artifact verification failed: requested ${item.expectedKind} was not found at ${join("/tmp/host-browser-artifact-tests", item.data.path)}.`);
 		assert.equal(presentation.resultCategory, "failure");
 		assert.equal(presentation.failureCategory, "artifact-missing");
 		assert.equal(presentation.artifacts?.length, 1);
 		assert.equal(presentation.artifacts?.[0]?.kind, item.expectedKind);
 		assert.equal(presentation.artifacts?.[0]?.path, item.data.path);
-		assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/pi-agent-browser-artifact-tests", item.data.path));
+		assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/host-browser-artifact-tests", item.data.path));
 		assert.equal(presentation.artifacts?.[0]?.mediaType, undefined);
 		assert.equal(presentation.artifacts?.[0]?.exists, false);
 		assert.equal(presentation.artifactVerification?.missingCount, 1);
 		assert.equal(presentation.artifactVerification?.verified, false);
 		assert.equal(presentation.artifactVerification?.artifacts[0]?.state, "missing");
-		assert.equal(presentation.artifactVerification?.artifacts[0]?.absolutePath, join("/tmp/pi-agent-browser-artifact-tests", item.data.path));
+		assert.equal(presentation.artifactVerification?.artifacts[0]?.absolutePath, join("/tmp/host-browser-artifact-tests", item.data.path));
 		assert.equal(presentation.imagePath, undefined);
 		assert.equal(presentation.imagePaths, undefined);
 		if (item.commandInfo.command === "pdf") {
@@ -196,7 +196,7 @@ test("buildToolPresentation renders metadata-first summaries for file artifact c
 test("buildToolPresentation does not classify state load paths as saved artifacts", async () => {
 	const presentation = await buildToolPresentation({
 		commandInfo: { command: "state", subcommand: "load" },
-		cwd: "/tmp/pi-agent-browser-artifact-tests",
+		cwd: "/tmp/host-browser-artifact-tests",
 		envelope: { success: true, data: { path: "auth-state.json" } },
 	});
 
@@ -210,11 +210,11 @@ test("buildToolPresentation does not classify state load paths as saved artifact
 test("buildToolPresentation records path-bearing diff screenshots without inlining them as trusted screenshots", async () => {
 	const presentation = await buildToolPresentation({
 		commandInfo: { command: "diff", subcommand: "screenshot" },
-		cwd: "/tmp/pi-agent-browser-artifact-tests",
+		cwd: "/tmp/host-browser-artifact-tests",
 		envelope: { success: true, data: { baselinePath: "baseline.png", diffPath: "diff.png", mismatchPixels: 12 } },
 	});
 
-	assert.equal(presentation.summary, "Artifact verification failed: requested image was not found at /tmp/pi-agent-browser-artifact-tests/diff.png.");
+	assert.equal(presentation.summary, "Artifact verification failed: requested image was not found at /tmp/host-browser-artifact-tests/diff.png.");
 	assert.equal(presentation.resultCategory, "failure");
 	assert.equal(presentation.failureCategory, "artifact-missing");
 	assert.equal(presentation.content[0]?.type, "text");
@@ -226,7 +226,7 @@ test("buildToolPresentation records path-bearing diff screenshots without inlini
 	assert.equal(presentation.artifacts?.length, 1);
 	assert.equal(presentation.artifacts?.[0]?.kind, "image");
 	assert.equal(presentation.artifacts?.[0]?.path, "diff.png");
-	assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/pi-agent-browser-artifact-tests", "diff.png"));
+	assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/host-browser-artifact-tests", "diff.png"));
 	assert.equal(presentation.artifactVerification?.artifacts[0]?.state, "missing");
 	assert.equal(presentation.artifactVerification?.artifacts[0]?.path, "diff.png");
 	assert.equal(presentation.imagePath, undefined);
@@ -236,7 +236,7 @@ test("buildToolPresentation records path-bearing diff screenshots without inlini
 test("buildToolPresentation renders record start as a lifecycle state without missing-file copy", async () => {
 	const presentation = await buildToolPresentation({
 		commandInfo: { command: "record", subcommand: "start" },
-		cwd: "/tmp/pi-agent-browser-artifact-tests",
+		cwd: "/tmp/host-browser-artifact-tests",
 		envelope: { success: true, data: { path: "recording.webm" } },
 	});
 
@@ -252,7 +252,7 @@ test("buildToolPresentation renders record start as a lifecycle state without mi
 	assert.equal(presentation.artifacts?.length, 1);
 	assert.equal(presentation.artifacts?.[0]?.kind, "video");
 	assert.equal(presentation.artifacts?.[0]?.path, "recording.webm");
-	assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/pi-agent-browser-artifact-tests", "recording.webm"));
+	assert.equal(presentation.artifacts?.[0]?.absolutePath, join("/tmp/host-browser-artifact-tests", "recording.webm"));
 	assert.equal(presentation.artifacts?.[0]?.mediaType, undefined);
 	assert.equal(presentation.artifacts?.[0]?.exists, undefined);
 	assert.equal(presentation.artifacts?.[0]?.status, "pending");
@@ -271,7 +271,7 @@ test("buildToolPresentation renders record start as a lifecycle state without mi
 test("buildToolPresentation renders record restart as a pending lifecycle state", async () => {
 	const presentation = await buildToolPresentation({
 		commandInfo: { command: "record", subcommand: "restart" },
-		cwd: "/tmp/pi-agent-browser-artifact-tests",
+		cwd: "/tmp/host-browser-artifact-tests",
 		envelope: { success: true, data: { path: "recording-restart.webm" } },
 	});
 
@@ -289,7 +289,7 @@ test("buildToolPresentation renders record restart as a pending lifecycle state"
 });
 
 test("buildToolPresentation notes the previous recording saved by record restart", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-restart-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-restart-"));
 	try {
 		const firstPath = join(tempDir, "first.webm");
 		const restartedPath = join(tempDir, "restarted.webm");
@@ -324,7 +324,7 @@ test("buildToolPresentation notes the previous recording saved by record restart
 });
 
 test("buildToolPresentation rejects a stale previous recording reported by record restart", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-restart-stale-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-restart-stale-"));
 	try {
 		const firstPath = join(tempDir, "first.webm");
 		const restartedPath = join(tempDir, "restarted.webm");
@@ -366,7 +366,7 @@ test("buildToolPresentation rejects a stale previous recording reported by recor
 });
 
 test("buildToolPresentation rejects a missing previous recording reported by record restart", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-restart-missing-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-restart-missing-"));
 	try {
 		const firstPath = join(tempDir, "first.webm");
 		const restartedPath = join(tempDir, "restarted.webm");
@@ -402,7 +402,7 @@ test("buildToolPresentation rejects a missing previous recording reported by rec
 });
 
 test("buildToolPresentation rejects same-path record restart when the prior output is missing", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-restart-same-missing-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-restart-same-missing-"));
 	try {
 		const recordingPath = join(tempDir, "same.webm");
 		const started = await buildToolPresentation({
@@ -429,7 +429,7 @@ test("buildToolPresentation rejects same-path record restart when the prior outp
 });
 
 test("buildToolPresentation coalesces a batched recording to its terminal saved state", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-batch-terminal-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-batch-terminal-"));
 	try {
 		const recordingPath = join(tempDir, "recording.webm");
 		const reportedStopPath = join(tempDir, "final-recording.webm");
@@ -464,7 +464,7 @@ test("buildToolPresentation coalesces a batched recording to its terminal saved 
 });
 
 test("buildToolPresentation coalesces a recording saved after an intermediate close", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-batch-close-stop-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-batch-close-stop-"));
 	try {
 		const recordingPath = join(tempDir, "recording.webm");
 		await writeFile(recordingPath, "completed recording");
@@ -496,7 +496,7 @@ test("buildToolPresentation coalesces a recording saved after an intermediate cl
 });
 
 test("buildToolPresentation marks a batched recording abandoned by close as missing", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-batch-close-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-batch-close-"));
 	try {
 		const recordingPath = join(tempDir, "recording.webm");
 		const presentation = await buildToolPresentation({
@@ -528,7 +528,7 @@ test("buildToolPresentation marks a batched recording abandoned by close as miss
 });
 
 test("buildToolPresentation keeps recording cleanup actionable after a later batch failure", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-record-batch-failure-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-record-batch-failure-"));
 	try {
 		const recordingPath = join(tempDir, "recording.webm");
 		const presentation = await buildToolPresentation({
@@ -559,7 +559,7 @@ test("buildToolPresentation keeps recording cleanup actionable after a later bat
 });
 
 test("buildToolPresentation records explicit saved files in the bounded session artifact manifest", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-explicit-manifest-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-explicit-manifest-"));
 	const downloadPath = join(tempDir, "download.txt");
 	await writeFile(downloadPath, "manifest download");
 	try {
@@ -585,7 +585,7 @@ test("buildToolPresentation records explicit saved files in the bounded session 
 });
 
 test("buildToolPresentation scopes artifact verification to current-result artifacts and spills", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-verification-scope-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-verification-scope-"));
 	const downloadPath = join(tempDir, "download.txt");
 	await writeFile(downloadPath, "verified artifact");
 	try {
@@ -815,7 +815,7 @@ test("buildToolPresentation adds snapshot recovery for wait text assertion failu
 
 
 test("buildToolPresentation keeps eval image-like string results text-only", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-untrusted-image-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-untrusted-image-"));
 	const imagePath = join(tempDir, "secret.png");
 	await writeFile(imagePath, png);
 
@@ -852,7 +852,7 @@ test("buildToolPresentation keeps non-artifact path-like scalar results text-onl
 });
 
 test("buildToolPresentation keeps get absolute image path results text-only", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-untrusted-absolute-image-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-untrusted-absolute-image-"));
 	const imagePath = join(tempDir, "secret.jpg");
 	await writeFile(imagePath, Buffer.from([0xff, 0xd8, 0xff, 0xd9]));
 
@@ -874,7 +874,7 @@ test("buildToolPresentation keeps get absolute image path results text-only", as
 });
 
 test("buildToolPresentation does not inline non-screenshot path records with image extensions", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-download-image-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-download-image-"));
 	const imagePath = join(tempDir, "downloaded.png");
 	await writeFile(imagePath, png);
 
@@ -942,7 +942,7 @@ test("buildToolPresentation preserves wait --download saved-file metadata inside
 });
 
 test("buildToolPresentation does not re-append old artifact retention noise for routine explicit batch files", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-batch-explicit-noise-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-batch-explicit-noise-"));
 	const downloadPath = join(tempDir, "export.csv");
 	await writeFile(downloadPath, "a,b\n1,2\n");
 	const baseManifest: SessionArtifactManifest = {
@@ -982,7 +982,7 @@ test("buildToolPresentation does not re-append old artifact retention noise for 
 });
 
 test("buildToolPresentation reuses standalone inline screenshot rendering inside batch output", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-batch-image-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-batch-image-"));
 	const imagePath = join(tempDir, "batched.png");
 	await writeFile(imagePath, png);
 
@@ -1027,7 +1027,7 @@ test("buildToolPresentation reuses standalone inline screenshot rendering inside
 test("buildToolPresentation preserves non-screenshot file artifacts inside batch output", async () => {
 	const presentation = await buildToolPresentation({
 		commandInfo: { command: "batch" },
-		cwd: "/tmp/pi-agent-browser-batch-artifacts",
+		cwd: "/tmp/host-browser-batch-artifacts",
 		envelope: {
 			success: true,
 			data: [
@@ -1059,7 +1059,7 @@ test("buildToolPresentation preserves non-screenshot file artifacts inside batch
 });
 
 test("buildToolPresentation skips oversized inline image attachments", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-image-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-image-"));
 	const imagePath = join(tempDir, "large.png");
 	await writeFile(imagePath, Buffer.concat([png, Buffer.alloc(256 - png.length)]));
 

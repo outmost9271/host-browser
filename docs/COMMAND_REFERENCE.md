@@ -14,7 +14,7 @@ Provide a local, repo-readable command reference for the native `agent_browser` 
 
 This project intentionally blocks normal `agent-browser` bash usage in most agent sessions, so the agent still needs an accessible local equivalent of the upstream command surface. This document is the durable reference the agent can read inside the repository without calling the binary directly.
 
-After updating `pi-agent-browser-native`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
+After updating `host-browser`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
 
 ## Upstream baseline
 
@@ -916,19 +916,19 @@ When these commands are invoked through the native `agent_browser` tool, structu
 
 ## Optional package config and companion web search
 
-`pi-agent-browser-native` has package-owned config under Pi-scoped paths. This is separate from upstream `agent-browser` config and from Pi package settings:
+`host-browser` has package-owned config under Pi-scoped paths. This is separate from upstream `agent-browser` config and from Pi package settings:
 
-- global: `~/.pi/config/pi-agent-browser-native/config.json`
-- project-local: `.pi/config/pi-agent-browser-native/config.json`
+- global: `~/.pi/config/host-browser/config.json`
+- project-local: `.pi/config/host-browser/config.json`
 - explicit override: `PI_AGENT_BROWSER_CONFIG=/path/to/config.json`
 
 Get an Exa API key from the [Exa dashboard](https://dashboard.exa.ai/api-keys) or a Brave Search API key from the [Brave Search API dashboard](https://api-dashboard.search.brave.com/). If both keys are available, `agent_browser_web_search` prefers Exa by default because its `/search` endpoint returns token-efficient highlights and agent-oriented search modes; set `webSearch.preferredProvider` to `"brave"` when Brave Search is preferred. You can also disable this package's search tool with `webSearch.enabled: false` when another search tool should win. Config merges global → project → `PI_AGENT_BROWSER_CONFIG` override, so `enabled` is read from the final loaded config: a global disable can be re-enabled by project or override config, while an override file with `enabled: false` is the highest-priority hard disable for that run. Under Pi 0.84.0+, globally installed or CLI-loaded extensions are developer-trusted code, so this extension reads project-local config under `.pi/config/...` by default and skips that project layer when Pi reports the project is untrusted or when launched with `--no-approve`.
 
-`pi install npm:pi-agent-browser-native` loads the extension, but it does **not** usually put the package helper on your shell `PATH`. The clearest setup is to write the config file directly and keep actual keys in the environment that launches `pi`:
+`pi install npm:host-browser` loads the extension, but it does **not** usually put the package helper on your shell `PATH`. The clearest setup is to write the config file directly and keep actual keys in the environment that launches `pi`:
 
 ```bash
-mkdir -p ~/.pi/config/pi-agent-browser-native
-cat > ~/.pi/config/pi-agent-browser-native/config.json <<'JSON'
+mkdir -p ~/.pi/config/host-browser
+cat > ~/.pi/config/host-browser/config.json <<'JSON'
 {
   "version": 1,
   "webSearch": {
@@ -945,18 +945,18 @@ JSON
 `pi install` does not add package helper binaries to your shell `PATH`. Use direct JSON config edits, or run the helper only through `npm exec`:
 
 ```bash
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config paths
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config show
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env EXA_API_KEY --global
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env BRAVE_API_KEY --global
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-env EXA_API_KEY --project
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search prefer brave --global
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search disable --global
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search disable --project
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-command "op read 'op://Private/Brave Search/API Key'" --provider brave --global
-printf '%s' "$EXA_API_KEY" | npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config web-search set-key --provider exa --stdin
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config browser profile set "Profile 1" --policy authenticated-only
-npm exec --yes --package pi-agent-browser-native@latest -- pi-agent-browser-config browser executable set "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+npm exec --yes --package host-browser@latest -- host-browser-config paths
+npm exec --yes --package host-browser@latest -- host-browser-config show
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env EXA_API_KEY --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env BRAVE_API_KEY --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-env EXA_API_KEY --project
+npm exec --yes --package host-browser@latest -- host-browser-config web-search prefer brave --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search disable --global
+npm exec --yes --package host-browser@latest -- host-browser-config web-search disable --project
+npm exec --yes --package host-browser@latest -- host-browser-config web-search set-command "op read 'op://Private/Brave Search/API Key'" --provider brave --global
+printf '%s' "$EXA_API_KEY" | npm exec --yes --package host-browser@latest -- host-browser-config web-search set-key --provider exa --stdin
+npm exec --yes --package host-browser@latest -- host-browser-config browser profile set "Profile 1" --policy authenticated-only
+npm exec --yes --package host-browser@latest -- host-browser-config browser executable set "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 ```
 
 The optional `agent_browser_web_search` tool is available when Exa or Brave credentials are visible from startup config or trusted session config and the runtime config has not set `webSearch.enabled` to `false`. It is a separate custom tool, not an `agent_browser` input mode, and does not launch a browser. Prefer it for current/live external web facts and URL discovery; use `agent_browser` for browser interaction, screenshots, authenticated/profile pages, and DOM inspection after you have a target URL. Prefer it over driving public search-engine forms such as Google with browser `job`/`type` flows, which can redirect headless automation to anti-bot or CAPTCHA pages; do not attempt CAPTCHA bypass. Disable scope is explicit: `web-search disable --global` sets the normal user default, `web-search disable --project` disables it for one repo, and a `PI_AGENT_BROWSER_CONFIG` override containing `{ "version": 1, "webSearch": { "enabled": false } }` wins over both for a hard per-run disable. Loaded config may use plaintext, custom env aliases, interpolation literals, malformed-or-late-bound `$` values, and command-backed web-search keys; the resolved secret reaches the provider request while model-facing tool output and status text stay redacted. `web-search set-key`, `set-command`, and `clear` require `--provider`; `set-env` infers Exa/Brave from `EXA_API_KEY` or `BRAVE_API_KEY` unless you pass `--provider`.
@@ -965,7 +965,7 @@ For Exa, effective search type precedence is per-call `searchType` → `webSearc
 
 ```json
 {
-  "query": "pi-agent-browser-native agent_browser_web_search searchType defaults",
+  "query": "host-browser agent_browser_web_search searchType defaults",
   "searchType": "deep-lite",
   "count": 5
 }
@@ -1077,7 +1077,7 @@ Standalone `agent-browser` looks for `agent-browser.json` in these locations, fr
 3. Environment variables, including `AGENT_BROWSER_CONFIG`.
 4. CLI flags.
 
-Use separated `--config <path>` to load a specific upstream config; upstream 0.33.2 does not recognize `--config=<path>` as the global selector. Browser-backed and sessionless native calls preserve `--config`, `AGENT_BROWSER_CONFIG`, passive project/user config, and other upstream environment exactly as supplied. The Pi-scoped package config under `.pi/config/pi-agent-browser-native/` remains separate. Boolean flags accept optional `true` or `false` values, such as `--headed false`, `--webgpu false`, or `--no-webmcp false`, to override config. Browser extensions from user and project configs are merged rather than replaced.
+Use separated `--config <path>` to load a specific upstream config; upstream 0.33.2 does not recognize `--config=<path>` as the global selector. Browser-backed and sessionless native calls preserve `--config`, `AGENT_BROWSER_CONFIG`, passive project/user config, and other upstream environment exactly as supplied. The Pi-scoped package config under `.pi/config/host-browser/` remains separate. Boolean flags accept optional `true` or `false` values, such as `--headed false`, `--webgpu false`, or `--no-webmcp false`, to override config. Browser extensions from user and project configs are merged rather than replaced.
 
 Other useful environment variables include `AGENT_BROWSER_DEFAULT_TIMEOUT`, `AGENT_BROWSER_AUTOSAVE_INTERVAL_MS`, `AGENT_BROWSER_STREAM_PORT`, `AGENT_BROWSER_STREAM_QUALITY`, `AGENT_BROWSER_STREAM_MAX_WIDTH`, `AGENT_BROWSER_STREAM_MAX_HEIGHT`, `AGENT_BROWSER_IDLE_TIMEOUT_MS`, `AGENT_BROWSER_ENCRYPTION_KEY`, `AGENT_BROWSER_STATE_EXPIRE_DAYS`, `AGENT_BROWSER_IOS_DEVICE`, `AGENT_BROWSER_IOS_UDID`, `AI_GATEWAY_URL`, `AI_GATEWAY_API_KEY`, provider credential names, and AWS credential names when using AgentCore. The upstream child receives the parent environment plus wrapper overrides such as the managed socket directory, clamped default operation timeout, canonical owned-session namespace (including empty default), and Pi-transcript- plus Git-checkout-generation-scoped `AGENT_BROWSER_RESTORE` for wrapper-owned managed sessions (`buildAgentBrowserProcessEnv` in `extensions/agent-browser/lib/process.ts`, ownership carried by the wrapper's typed process options and call-scoped managed-session context). Model-facing output still redacts recognized secret values.
 

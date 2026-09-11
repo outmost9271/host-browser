@@ -15,7 +15,7 @@ Related docs:
 
 ## Purpose
 
-Provide one concrete maintainer workflow for validating repo state, package contents, and install guidance before publishing `pi-agent-browser-native`.
+Provide one concrete maintainer workflow for validating repo state, package contents, and install guidance before publishing `host-browser`.
 
 ## Pre-release checks
 
@@ -318,14 +318,14 @@ Recommended configured-source lifecycle follow-up:
 
 ## Post-publish install validation
 
-After updating `pi-agent-browser-native`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
+After updating `host-browser`, fully quit and restart Pi before using the updated tools. `/reload` can retain previously loaded compiled JavaScript even after `dist/` is rebuilt, so it is not a reliable way to pick up package updates.
 
 After publishing a release, validate the package-first path in isolation. `npm run verify -- release` includes the deterministic fake-binary packaged execution gate and the pre-publish Crabbox platform matrix, but it does not replace a real-browser installed-package smoke against the published npm package:
 
 ```bash
-npm exec --package pi-agent-browser-native -- pi-agent-browser-doctor
+npm exec --package host-browser -- host-browser-doctor
 npm run verify -- release
-pi --no-extensions -e npm:pi-agent-browser-native@<version>
+pi --no-extensions -e npm:host-browser@<version>
 ```
 
 Then run the real-browser smoke prompt:

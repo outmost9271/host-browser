@@ -25,7 +25,7 @@ test("getRunningHeadedAutosavePolicyChangeError rejects live timer changes but a
 });
 
 test("inspectManagedSessionDaemon waits through a temporarily busy daemon", { concurrency: false, timeout: 15_000 }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-daemon-policy-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-daemon-policy-"));
 	await writeFakeAgentBrowserBinary(tempDir, `
 Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5250);
 process.stdout.write(JSON.stringify({ success: true, data: { active: false, runtime: null } }));

@@ -393,7 +393,7 @@ test("script inner policy rejects identity, lifecycle, batch, local, and persist
 });
 
 test("script mode fails closed when Pi session persistence is disabled", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-no-session-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-no-session-"));
 	try {
 		const harness = createExtensionHarness({ cwd: tempDir });
 		await runExtensionEvent(harness.handlers, "session_start", { reason: "new" }, harness.ctx);
@@ -407,7 +407,7 @@ test("script mode fails closed when Pi session persistence is disabled", async (
 });
 
 test("script policy rejections fail the top-level result with disjoint counters", async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-rejection-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-rejection-"));
 	try {
 		const harness = createExtensionHarness({ cwd: tempDir, sessionFile: join(tempDir, "session.jsonl") });
 		await runExtensionEvent(harness.handlers, "session_start", { reason: "new" }, harness.ctx);
@@ -433,7 +433,7 @@ test("script policy rejections fail the top-level result with disjoint counters"
 });
 
 test("session_shutdown aborts and reaps an active sandbox child", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-shutdown-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-shutdown-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `if (__piabFakeArgs.includes("--version")) {
   setTimeout(() => process.stdout.write(${JSON.stringify(`${TARGET_AGENT_BROWSER_VERSION_LABEL}\n`)}), 500);
@@ -456,7 +456,7 @@ test("session_shutdown aborts and reaps an active sandbox child", { concurrency:
 });
 
 test("session_tree aborts and fully cleans an active browser-bearing script", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-tree-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-tree-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
@@ -511,7 +511,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: { title: "Tree p
 });
 
 test("script inner calls and cleanup clear ambient upstream launch controls", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-env-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-env-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	const ambientNames = [
@@ -562,7 +562,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: { title: "Isolat
 });
 
 test("script cleanup retires its active recording reservation", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-recording-cleanup-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-recording-cleanup-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const args = process.argv.slice(2);
 const command = args.find((arg) => ["open", "record", "pdf", "close", "session"].includes(arg));
@@ -591,7 +591,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: { closed: true }
 });
 
 test("agentBrowserExtension injects an isolated script session, persists its lease before spawn, and closes it", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-extension-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-extension-"));
 	const logPath = join(tempDir, "invocations.log");
 	const leaseMarkerPath = join(tempDir, "lease-active");
 	const outputPath = join(tempDir, "script-output.json");
@@ -671,7 +671,7 @@ emit(values);`,
 });
 
 test("agentBrowserExtension closes its isolated session after a script timeout", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-timeout-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-timeout-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
@@ -717,7 +717,7 @@ process.stdout.write(JSON.stringify({ success: true, data: args.includes("close"
 });
 
 test("agentBrowserExtension rehydrates only its verified compact spill for script logic", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-spill-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-spill-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const args = process.argv.slice(2);
 if (args.includes("close")) process.stdout.write(JSON.stringify({ success: true, data: { closed: true } }));
@@ -740,7 +740,7 @@ else process.stdout.write(JSON.stringify({ success: true, data: Array.from({ len
 });
 
 test("script still runs fail-closed cleanup when the main browser command never starts", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-preflight-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-preflight-"));
 	const logPath = join(tempDir, "invocations.log");
 	const socketDir = join(tempDir, "a".repeat(80));
 	const basePath = process.env.PATH ?? "";
@@ -772,7 +772,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { title: "should not 
 });
 
 test("script cleanup failure is durable and exposes the exact close action", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-cleanup-fail-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-cleanup-fail-"));
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const args = process.argv.slice(2);
 if (args.includes("close")) { process.stderr.write("close failed"); process.exit(1); }
@@ -797,7 +797,7 @@ process.stdout.write(JSON.stringify({ success: true, data: { title: "ok" } }));`
 });
 
 test("session_start restores failed script leases and retries close in a new extension process", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-script-restore-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-script-restore-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	const sessionName = "piab-script-12345678-1234-4123-8123-123456789abc";

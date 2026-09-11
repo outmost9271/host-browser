@@ -200,7 +200,7 @@ test("Android restore identity stays stable without hard links or reliable birth
 		const first = createManagedSessionRestoreKey(cwd, "android-scope", "android");
 		writeFileSync(join(cwd, ".git", "mutable-entry"), "changes directory ctime");
 		assert.equal(createManagedSessionRestoreKey(cwd, "android-scope", "android"), first);
-		assert.equal(statSync(join(cwd, ".git", "pi-agent-browser-project-generation-v1.json")).mode & 0o777, 0o600);
+		assert.equal(statSync(join(cwd, ".git", "host-browser-project-generation-v1.json")).mode & 0o777, 0o600);
 	} finally {
 		rmSync(cwd, { recursive: true, force: true });
 	}
@@ -252,7 +252,7 @@ test("checkout-generation marker creation converges across processes", async () 
 		}
 		assert.equal(keys[0], keys[1]);
 		assert.match(keys[0] ?? "", /^piab-r2-/);
-		if (process.platform !== "win32") assert.equal(statSync(join(cwd, ".git", "pi-agent-browser-project-generation-v1.json")).mode & 0o777, 0o600);
+		if (process.platform !== "win32") assert.equal(statSync(join(cwd, ".git", "host-browser-project-generation-v1.json")).mode & 0o777, 0o600);
 	} finally {
 		rmSync(cwd, { recursive: true, force: true });
 	}
@@ -264,7 +264,7 @@ test("managed restore rejects a tampered checkout-generation marker", () => {
 	try {
 		initializeGitProject(cwd);
 		assert.match(createManagedSessionRestoreKey(cwd), /^piab-r2-/);
-		const marker = join(cwd, ".git", "pi-agent-browser-project-generation-v1.json");
+		const marker = join(cwd, ".git", "host-browser-project-generation-v1.json");
 		chmodSync(marker, 0o644);
 		assert.deepEqual(getManagedSessionRestoreEnv({
 			args: ["--session", "piab-marker", "open", "https://example.com"],
@@ -1075,7 +1075,7 @@ test("owned snapshot pruning persists close-proven paths and leaves unrecorded m
 			}), index === 2 ? 1 : 0);
 		}
 		assert.equal(existsSync(join(sessions, `${key}-old.json`)), false);
-		const manifest = readdirSync(sessions).find((name) => name.startsWith(".pi-agent-browser-owned-snapshots-v2-"));
+		const manifest = readdirSync(sessions).find((name) => name.startsWith(".host-browser-owned-snapshots-v2-"));
 		assert.ok(manifest);
 		const manifestDirectory = join(sessions, manifest);
 		assert.equal(statSync(manifestDirectory).mode & 0o077, 0);
@@ -1123,7 +1123,7 @@ test("owned snapshot pruning leaves independent checkout generations untouched",
 
 		assert.equal(pruneOwnedManagedSessionRestoreSnapshots({ cwd: isolatedProject, restoreKey: currentKey, parentEnv: { HOME: home }, platform: posixFixturePlatform, statePath: currentPath }), 0);
 		assert.equal(existsSync(otherPath), true);
-		assert.equal(existsSync(join(sessions, `.pi-agent-browser-owned-snapshots-v2-${otherKey}`)), true);
+		assert.equal(existsSync(join(sessions, `.host-browser-owned-snapshots-v2-${otherKey}`)), true);
 		assert.equal(existsSync(currentPath), true);
 	} finally {
 		rmSync(home, { recursive: true, force: true });
@@ -1184,7 +1184,7 @@ test("owned snapshot pruning expires stale generations from the same checkout pa
 		assert.equal(pruneOwnedManagedSessionRestoreSnapshots({ cwd: reusedProject, restoreKey: currentKey, parentEnv: { HOME: home }, platform: posixFixturePlatform, statePath: currentPath }), 1);
 		assert.equal(existsSync(retiredPath), false);
 		assert.equal(existsSync(unrecordedPath), true);
-		assert.equal(existsSync(join(sessions, `.pi-agent-browser-owned-snapshots-v2-${retiredKey}`)), false);
+		assert.equal(existsSync(join(sessions, `.host-browser-owned-snapshots-v2-${retiredKey}`)), false);
 		assert.equal(existsSync(currentPath), true);
 	} finally {
 		rmSync(home, { recursive: true, force: true });
@@ -1206,7 +1206,7 @@ test("owned snapshot manifest self-heals malformed records without claiming unre
 		for (const path of [oldPath, middlePath, newPath]) writeFileSync(path, "{}");
 
 		assert.equal(pruneOwnedManagedSessionRestoreSnapshots({ cwd, restoreKey: key, parentEnv: { HOME: home }, platform: posixFixturePlatform, statePath: oldPath }), 0);
-		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".pi-agent-browser-owned-snapshots-v2-"));
+		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".host-browser-owned-snapshots-v2-"));
 		assert.ok(manifestName);
 		const manifestDirectory = join(sessions, manifestName);
 		const firstRecordPath = join(manifestDirectory, readdirSync(manifestDirectory).find((name) => name.endsWith(".json")) as string);
@@ -1244,7 +1244,7 @@ test("owned snapshot manifest converges concurrent process writers without a blo
 		const paths = ["first", "second", "third"].map((suffix) => join(sessions, `${key}-${suffix}.json`));
 		for (const path of paths) writeFileSync(path, "{}");
 		assert.equal(pruneOwnedManagedSessionRestoreSnapshots({ cwd, restoreKey: key, parentEnv, statePath: paths[0] }), 0);
-		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".pi-agent-browser-owned-snapshots-v2-"));
+		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".host-browser-owned-snapshots-v2-"));
 		assert.ok(manifestName);
 		const manifestPath = join(sessions, manifestName);
 		const moduleUrl = new URL("../extensions/agent-browser/lib/managed-session-restore.ts", import.meta.url).href;
@@ -1298,7 +1298,7 @@ test("owned snapshot retention converges concurrent young closes to the newest 2
 		assert.equal(existsSync(paths[0] as string), false);
 		assert.equal(existsSync(paths[1] as string), false);
 		assert.equal(existsSync(paths.at(-1) as string), true);
-		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".pi-agent-browser-owned-snapshots-v2-"));
+		const manifestName = readdirSync(sessions).find((name) => name.startsWith(".host-browser-owned-snapshots-v2-"));
 		assert.ok(manifestName);
 		assert.equal(readdirSync(join(sessions, manifestName)).filter((name) => name.endsWith(".json")).length, 256);
 	} finally {
@@ -1380,7 +1380,7 @@ test("managed restore opt-out avoids state-directory permission changes and disa
 			{},
 		);
 		assert.equal(statSync(root).mode & 0o077, 0o050);
-		assert.equal(existsSync(join(cwd, ".git", "pi-agent-browser-project-generation-v1.json")), false);
+		assert.equal(existsSync(join(cwd, ".git", "host-browser-project-generation-v1.json")), false);
 		assert.equal(isManagedSessionRestoreDisabled(managed), true);
 	} finally {
 		rmSync(cwd, { recursive: true, force: true });

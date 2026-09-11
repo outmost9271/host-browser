@@ -13,7 +13,7 @@ export function isManagedSessionRestoreKey(value: string | null | undefined): va
 }
 const MANAGED_SESSION_FRESH_SUFFIX_PATTERN = /-fresh-[a-f\d]{10}$/i;
 const MANAGED_SESSION_RESTORE_KEY_HASH_LENGTH = 32;
-const PROJECT_GENERATION_MARKER_NAME = "pi-agent-browser-project-generation-v1.json";
+const PROJECT_GENERATION_MARKER_NAME = "host-browser-project-generation-v1.json";
 const PROJECT_GENERATION_MARKER_MAX_BYTES = 1_024;
 
 type ProjectGenerationCacheEntry = {

@@ -397,7 +397,7 @@ test("buildToolPresentation adds routed pending network diagnostics", async () =
 			data: { requests: [{ method: "GET", requestId: "r1", resourceType: "fetch", url: "https://example.test/api/items" }] },
 		},
 		networkRouteDiagnostics: [{ mode: "body", reason: "pending-routed-request", requestId: "r1", requestUrl: "https://example.test/api/items", routePattern: "**/api/**", summary: "pending" }],
-		sessionName: "pi-agent-browser-test",
+		sessionName: "host-browser-test",
 	});
 
 	const text = (presentation.content[0] as { text: string }).text;
@@ -405,7 +405,7 @@ test("buildToolPresentation adds routed pending network diagnostics", async () =
 	assert.match(text, /pending-routed-request/);
 	assert.deepEqual(presentation.networkRouteDiagnostics?.map((item) => item.reason), ["pending-routed-request"]);
 	assert.deepEqual(presentation.nextActions?.slice(0, 2).map((action) => action.id), ["inspect-routed-network-request", "start-network-har-capture-for-route-mock"]);
-	assert.deepEqual(presentation.nextActions?.[0]?.params?.args, ["--session", "pi-agent-browser-test", "network", "request", "r1"]);
+	assert.deepEqual(presentation.nextActions?.[0]?.params?.args, ["--session", "host-browser-test", "network", "request", "r1"]);
 });
 
 test("buildToolPresentation flags routed requests that return failed statuses", async () => {
@@ -417,7 +417,7 @@ test("buildToolPresentation flags routed requests that return failed statuses", 
 			data: { requests: [{ method: "GET", requestId: "r404", resourceType: "fetch", status: 404, url: "https://example.test/api/stress" }] },
 		},
 		networkRouteDiagnostics: [{ mode: "body", reason: "unfulfilled-routed-request", requestId: "r404", requestUrl: "https://example.test/api/stress", routePattern: "**/api/stress", summary: "failed" }],
-		sessionName: "pi-agent-browser-test",
+		sessionName: "host-browser-test",
 	});
 
 	const text = (presentation.content[0] as { text: string }).text;
@@ -456,7 +456,7 @@ test("buildToolPresentation treats stream enable already-enabled as idempotent",
 		commandInfo: { command: "stream", subcommand: "enable" },
 		cwd: process.cwd(),
 		envelope: { success: true, data: { alreadyEnabled: true, enabled: true } },
-		sessionName: "pi-agent-browser-test",
+		sessionName: "host-browser-test",
 	});
 
 	assert.equal(presentation.summary, "Stream already enabled");

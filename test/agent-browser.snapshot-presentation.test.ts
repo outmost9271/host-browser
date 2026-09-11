@@ -142,7 +142,7 @@ test("buildToolPresentation keeps compact snapshot spill files in the persisted 
 
 		const spillPath = presentation.fullOutputPath;
 		assert.equal(typeof spillPath, "string");
-		assert.equal(spillPath?.startsWith(join(sessionDir, ".pi-agent-browser-artifacts", TEST_SESSION_ID)), true);
+		assert.equal(spillPath?.startsWith(join(sessionDir, ".host-browser-artifacts", TEST_SESSION_ID)), true);
 		await cleanupSecureTempArtifacts();
 		assert.match(await readFile(String(spillPath), "utf8"), /Persisted snapshot row 120/);
 		assert.equal((await stat(String(spillPath))).mode & 0o777, 0o600);

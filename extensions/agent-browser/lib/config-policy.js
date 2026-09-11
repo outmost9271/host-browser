@@ -28,8 +28,8 @@ const CONFIG_DIR_NAME = ".pi";
 export const AGENT_BROWSER_CONFIG_ENV = "PI_AGENT_BROWSER_CONFIG";
 export const BRAVE_API_KEY_ENV = "BRAVE_API_KEY";
 export const EXA_API_KEY_ENV = "EXA_API_KEY";
-export const CONFIG_RELATIVE_PATH = /** @type {const} */ ([CONFIG_DIR_NAME, "config", "pi-agent-browser-native", "config.json"]);
-export const GLOBAL_CONFIG_RELATIVE_PATH = /** @type {const} */ ([CONFIG_DIR_NAME, "config", "pi-agent-browser-native", "config.json"]);
+export const CONFIG_RELATIVE_PATH = /** @type {const} */ ([CONFIG_DIR_NAME, "config", "host-browser", "config.json"]);
+export const GLOBAL_CONFIG_RELATIVE_PATH = /** @type {const} */ ([CONFIG_DIR_NAME, "config", "host-browser", "config.json"]);
 export const SECRET_COMMAND_TIMEOUT_MS = 15_000;
 
 /** @type {Readonly<Record<WebSearchProvider, WebSearchProviderDescriptor>>} */
@@ -316,7 +316,7 @@ export function validateAgentBrowserConfig(value, path, errors, warnings) {
 
 	for (const key of Object.keys(value)) {
 		if (!["version", "webSearch", "browser"].includes(key)) {
-			warnings.push(`${path}.${key} is not a recognized pi-agent-browser-native config field and was ignored.`);
+			warnings.push(`${path}.${key} is not a recognized host-browser config field and was ignored.`);
 		}
 	}
 	return config;

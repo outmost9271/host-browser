@@ -40,7 +40,7 @@ async function waitForInvocation(
 }
 
 test("agentBrowserExtension re-selects the navigated tab after profiled opens when restored tabs steal focus", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -96,7 +96,7 @@ if (args.includes("tab") && args.includes("list")) {
 });
 
 test("agentBrowserExtension recovers and preserves the prior target when a command returns about:blank", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-about-blank-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-about-blank-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "tab-state.json");
 	const basePath = process.env.PATH ?? "";
@@ -197,7 +197,7 @@ if (args.includes("click")) {
 });
 
 test("agentBrowserExtension records about:blank and blocks stale refs when about:blank has no recoverable tab", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-about-blank-missing-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-about-blank-missing-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "tab-state.json");
 	const basePath = process.env.PATH ?? "";
@@ -316,7 +316,7 @@ if (args.includes("click")) {
 });
 
 test("agentBrowserExtension accepts about:blank after a batch close reactivates the session", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-about-blank-after-close-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-about-blank-after-close-"));
 	const statePath = join(tempDir, "relaunched");
 	const recordingPath = join(tempDir, "recording.webm");
 	const basePath = process.env.PATH ?? "";
@@ -382,7 +382,7 @@ if (args.includes("batch")) {
 });
 
 test("agentBrowserExtension lets URL QA navigate when the remembered tab is missing but still pins attached QA and raw reads", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-qa-missing-tab-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-qa-missing-tab-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "page.json");
 	const basePath = process.env.PATH ?? "";
@@ -452,7 +452,7 @@ process.stdout.write(JSON.stringify({ success: true, data }));`);
 });
 
 test("agentBrowserExtension allows explicit navigation to about:blank", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-about-blank-explicit-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-about-blank-explicit-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -526,7 +526,7 @@ if (args.includes("tab") && args.includes("list")) {
 });
 
 test("agentBrowserExtension serializes overlapping same-session opens and keeps the newer target", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(
@@ -599,7 +599,7 @@ if (args.includes("https://example.com/slow-first")) {
 });
 
 test("agentBrowserExtension serializes a newer unverified target after prior navigation", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-stale-unverified-target-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-stale-unverified-target-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
@@ -643,7 +643,7 @@ test("agentBrowserExtension serializes case-alias session and namespace identiti
 	concurrency: false,
 	skip: process.platform === "darwin" || process.platform === "win32" ? false : "session daemon paths are case-sensitive on this host",
 }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-session-case-alias-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-session-case-alias-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "shared-session-state.json");
 	const basePath = process.env.PATH ?? "";
@@ -701,7 +701,7 @@ if (args.includes("open")) {
 });
 
 test("agentBrowserExtension propagates caller aborts during live page verification", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-live-page-abort-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-live-page-abort-"));
 	const logPath = join(tempDir, "invocations.log");
 	const basePath = process.env.PATH ?? "";
 	await writeFakeAgentBrowserBinary(tempDir, `const fs = require("node:fs");
@@ -737,7 +737,7 @@ if (args.includes("get") && args.includes("url")) {
 });
 
 test("agentBrowserExtension re-selects the intended tab after a successful command when focus drifts afterward", { concurrency: false }, async () => {
-	const tempDir = await mkdtemp(join(tmpdir(), "pi-agent-browser-test-"));
+	const tempDir = await mkdtemp(join(tmpdir(), "host-browser-test-"));
 	const logPath = join(tempDir, "invocations.log");
 	const statePath = join(tempDir, "tab-state.json");
 	const basePath = process.env.PATH ?? "";

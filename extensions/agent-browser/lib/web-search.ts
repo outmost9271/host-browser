@@ -768,7 +768,7 @@ export function createAgentBrowserWebSearchTool(
 				throw new Error(`agent_browser_web_search config is invalid: ${runtimeConfigState.errors.join("; ")}`);
 			}
 			if (!runtimeConfigState.webSearchEnabled) {
-				throw new Error("agent_browser_web_search is disabled by pi-agent-browser-native config.");
+				throw new Error("agent_browser_web_search is disabled by host-browser config.");
 			}
 			const requestedProvider = params.provider ?? "auto";
 			const resolved = await resolvePreferredWebSearchCredential(runtimeConfigState, { provider: requestedProvider, signal });

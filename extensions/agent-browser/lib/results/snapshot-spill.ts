@@ -8,7 +8,7 @@ import {
 } from "./artifact-manifest.js";
 import type { SessionArtifactManifest, SessionArtifactManifestEntry } from "./contracts.js";
 
-const SNAPSHOT_SPILL_FILE_PREFIX = "pi-agent-browser-snapshot";
+const SNAPSHOT_SPILL_FILE_PREFIX = "host-browser-snapshot";
 
 export interface SnapshotSpillWriteResult {
 	evictedArtifacts: PersistentSessionArtifactEviction[];

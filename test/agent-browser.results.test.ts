@@ -406,7 +406,7 @@ test("buildAgentBrowserNextActions returns exact native-tool recommendations for
 	);
 	assert.deepEqual(
 		buildAgentBrowserNextActions({
-			electron: { launchId: "el_123", sessionName: "pi-agent-browser-electron-el_123", status: "active" },
+			electron: { launchId: "el_123", sessionName: "host-browser-electron-el_123", status: "active" },
 			resultCategory: "success",
 			successCategory: "completed",
 		})?.map((action) => ({ id: action.id, params: action.params })),
@@ -414,8 +414,8 @@ test("buildAgentBrowserNextActions returns exact native-tool recommendations for
 			{ id: "status-electron-launch", params: { electron: { action: "status", launchId: "el_123" } } },
 			{ id: "probe-electron-launch", params: { electron: { action: "probe", launchId: "el_123" } } },
 			{ id: "cleanup-electron-launch", params: { electron: { action: "cleanup", launchId: "el_123" } } },
-			{ id: "list-electron-tabs", params: { args: ["--session", "pi-agent-browser-electron-el_123", "tab", "list"] } },
-			{ id: "snapshot-electron-session", params: { args: ["--session", "pi-agent-browser-electron-el_123", "snapshot", "-i"] } },
+			{ id: "list-electron-tabs", params: { args: ["--session", "host-browser-electron-el_123", "tab", "list"] } },
+			{ id: "snapshot-electron-session", params: { args: ["--session", "host-browser-electron-el_123", "snapshot", "-i"] } },
 		],
 	);
 	assert.deepEqual(
@@ -806,11 +806,11 @@ test("getAgentBrowserErrorText prefers spill/write failures over downstream pars
 		exitCode: 0,
 		parseError: "agent-browser returned invalid JSON: Unexpected end of JSON input",
 		plainTextInspection: false,
-		spawnError: new Error("pi-agent-browser temp spill budget exceeded"),
+		spawnError: new Error("host-browser temp spill budget exceeded"),
 		stderr: "",
 	});
 
-	assert.equal(errorText, "pi-agent-browser temp spill budget exceeded");
+	assert.equal(errorText, "host-browser temp spill budget exceeded");
 });
 
 test("extractQaPageContext prefers batch open title over compiled checks url", async () => {

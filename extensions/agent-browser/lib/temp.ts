@@ -6,16 +6,16 @@ import { basename, dirname, join, resolve } from "node:path";
 import { isRecord, parsePositiveInteger } from "./parsing.js";
 import { processStartIdentitiesMatch, readProcessStartIdentity } from "./process-identity.js";
 
-const TEMP_ROOT_PREFIX = "pi-agent-browser-";
-const TEMP_ROOT_MARKER_FILE_NAME = ".pi-agent-browser-owner.json";
-const TEMP_ROOT_MARKER_KIND = "pi-agent-browser-temp-root";
+const TEMP_ROOT_PREFIX = "host-browser-";
+const TEMP_ROOT_MARKER_FILE_NAME = ".host-browser-owner.json";
+const TEMP_ROOT_MARKER_KIND = "host-browser-temp-root";
 const TEMP_ROOT_MARKER_VERSION = 2;
 const STALE_TEMP_ROOT_MAX_AGE_MS = 24 * 60 * 60 * 1_000;
 const TEMP_ROOT_MAX_BYTES_ENV = "PI_AGENT_BROWSER_TEMP_ROOT_MAX_BYTES";
 const DEFAULT_TEMP_ROOT_MAX_BYTES = 32 * 1_024 * 1_024;
 const SESSION_ARTIFACT_MAX_BYTES_ENV = "PI_AGENT_BROWSER_SESSION_ARTIFACT_MAX_BYTES";
 const DEFAULT_SESSION_ARTIFACT_MAX_BYTES = 32 * 1_024 * 1_024;
-const SESSION_ARTIFACTS_ROOT_DIR_NAME = ".pi-agent-browser-artifacts";
+const SESSION_ARTIFACTS_ROOT_DIR_NAME = ".host-browser-artifacts";
 
 export interface PersistentSessionArtifactStore {
 	protectedPaths?: readonly string[];
@@ -368,7 +368,7 @@ async function assertSecureTempRootBudget(tempRoot: string, additionalBytes: num
 	const maxBytes = getSecureTempRootMaxBytes();
 	const nextBytes = currentBytes + additionalBytes;
 	if (nextBytes > maxBytes) {
-		throw new Error(`pi-agent-browser temp spill budget exceeded (${nextBytes} bytes > ${maxBytes} byte limit).`);
+		throw new Error(`host-browser temp spill budget exceeded (${nextBytes} bytes > ${maxBytes} byte limit).`);
 	}
 }
 
@@ -447,7 +447,7 @@ async function prunePersistentSessionArtifactsToBudget(
 			return evictedArtifacts;
 		}
 	}
-	throw new Error(`pi-agent-browser persisted spill budget exceeded (${totalBytes + additionalBytes} bytes > ${maxBytes} byte limit).`);
+	throw new Error(`host-browser persisted spill budget exceeded (${totalBytes + additionalBytes} bytes > ${maxBytes} byte limit).`);
 }
 
 async function getSessionTempRoot(): Promise<string> {
@@ -525,7 +525,7 @@ export async function getSecureTempChildDirectoryValidationError(path: string, c
 	}
 	const ownershipMarker = await readTempRootOwnershipMarker(parentDirectory);
 	if (!ownershipMarker) {
-		return `Refusing to remove ${path}; parent directory is not a pi-agent-browser owned temp root.`;
+		return `Refusing to remove ${path}; parent directory is not a host-browser owned temp root.`;
 	}
 	const currentUid = getCurrentProcessUid();
 	if (currentUid !== undefined && ownershipMarker.ownerUid !== undefined && ownershipMarker.ownerUid !== currentUid) {
